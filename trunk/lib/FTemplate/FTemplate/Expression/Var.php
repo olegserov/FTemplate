@@ -1,7 +1,11 @@
 <?php
 class FTemplate_Expression_Var extends FTemplate_Expression
 {
-    const REGEX = '\$(\w+)((:?\.\w+|\[T_EXPRESSION\])+)';
+
+    public static function getRegEx()
+    {
+        return '\$(\w+)((:?\.\w+|\[T_EXPRESSION\])+)';
+    }
 
     public function replace(array $matches)
     {
@@ -9,6 +13,7 @@ class FTemplate_Expression_Var extends FTemplate_Expression
         $return = '$this->_vars[\'' . $matches[1] . '\']';
 
         // a.b.c[T_EXPRESSION].e -> ['a']['b']['c'][T_EXPRESSION]['e']
+        //@todo add support of: $a.b.c->e.g[T_EXPRESSION]->gg;
         if (!empty($matches[2])) {
             $tmp = $matches[2];
 

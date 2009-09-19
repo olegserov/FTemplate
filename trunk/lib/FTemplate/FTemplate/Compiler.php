@@ -8,8 +8,8 @@ class FTemplate_Compiler
         $this->_echoHeader($className);
 
         try {
-            foreach ($tree as $method => $list) {
-                $this->_echoMethod($method, $list);
+            foreach ($tree as $method => $context) {
+                $this->_echoMethod($method, $context);
             }
         } catch (Exception $e) {
             ob_flush();
@@ -21,11 +21,11 @@ class FTemplate_Compiler
         return ob_get_clean();
     }
 
-    protected function _echoMethod($method, $list)
+    protected function _echoMethod($method, $context)
     {
         $this->_echoBlock($method);
 
-        foreach ($list as $node) {
+        foreach ($context->getTree() as $node) {
             echo $node->getCode();
         }
 

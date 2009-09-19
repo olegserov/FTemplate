@@ -121,7 +121,7 @@ class PHPT
     protected function _parseFile($file)
     {
         $code = file_get_contents($file);
-        $parts = preg_split('/----+---/', $code, 3);
+        $parts = preg_split('/\s*----+---\s*/', $code, 3);
 
         if (!isset($parts[0], $parts[1])) {
             throw new Exception("Bad test file $file.");
