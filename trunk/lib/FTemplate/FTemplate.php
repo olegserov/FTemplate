@@ -63,6 +63,8 @@ class FTemplate
 
         $code = $this->_compile(file_get_contents($file), $class_name);
 
+        echo $code;
+
         eval($code);
 
       // Caching is allowed

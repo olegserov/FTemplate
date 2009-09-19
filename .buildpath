@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="trunk/classes"/>
+	<buildpathentry kind="src" path="trunk/lib/other"/>
+	<buildpathentry kind="src" path="trunk/test"/>
+	<buildpathentry excluding="trunk/classes/|trunk/lib/other/|trunk/test/" kind="src" path=""/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>

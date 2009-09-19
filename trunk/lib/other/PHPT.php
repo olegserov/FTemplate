@@ -143,6 +143,7 @@ class PHPT
 
     protected function _evalCode($code)
     {
+        //echo $code;
         ob_start();
         try {
 

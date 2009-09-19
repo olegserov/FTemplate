@@ -5,6 +5,7 @@ define('TEST_CONSTANT', 'THIS IS CONSTANT TEXT');
 Example: {TEST_CONSTANT}
 Line: "{__LINE__}" is TWO
 Line: "{__LINE__}" is THRE
+Line: "{__FILE__}" is THRE
 
 ---------------
 
