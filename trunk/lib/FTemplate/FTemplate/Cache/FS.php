@@ -3,8 +3,9 @@ class FTemplate_Cache_FS implements FTemplate_ICache
 {
     protected $_cacheDir;
 
-    public function __consturct()
+    public function __construct()
     {
+
         $this->_cacheDir = dirname(tempnam('non-existed', '')) . '/' . __CLASS__;
 
         if (!@is_dir($this->_cacheDir)) {

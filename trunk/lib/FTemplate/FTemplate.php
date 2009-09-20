@@ -7,11 +7,17 @@ class FTemplate
      *  * null - cache not inited yet;
      * @var FTemplate_ICache
      */
-    protected $_cacheDriver;
+    protected $_cacheDriver = null;
+
+    protected $_vars = array();
 
     public function assign($name, $value = null)
     {
-
+        if (is_array($name)) {
+            $this->_vars = array_merge($this->_vars, $name);
+        } else {
+            $this->_vars[$name] = $value;
+        }
     }
 
     public function setCacheDriver($driver)
@@ -54,6 +60,8 @@ class FTemplate
             $this->_cacheDriver = new FTemplate_Cache_FS();
         }
 
+
+
         // Caching is allowed
         if ($this->_cacheDriver) {
             if ($this->_cacheDriver->load($class_name, $file_m_time)) {
@@ -63,14 +71,16 @@ class FTemplate
 
         $code = $this->_compile(file_get_contents($file), $class_name);
 
-        echo $code;
-
-        eval($code);
-
-      // Caching is allowed
+        //Caching is allowed
         if ($this->_cacheDriver) {
             $this->_cacheDriver->save($class_name, $file_m_time, $code);
         }
+
+        //echo $code;
+
+        eval($code);
+
+
 
         return $class_name;
     }
@@ -83,7 +93,7 @@ class FTemplate
 
     protected function _call($className, $method = 'main')
     {
-        $ob = new $className();
+        $ob = new $className($this->_vars);
         $ob->$method();
     }
 

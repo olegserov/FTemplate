@@ -13,7 +13,7 @@ class FTemplate_Parser_Base
     {
         $dic = array(
             'TAG_OPEN' => '\\{',
-            'TAG_CLOSE' => '\\}',
+            'TAG_CLOSE' => '\\}\n?',
             'TAG_COMMENT_OPEN' => '\\{\\*',
             'TAG_COMMENT_CLOSE' => '\\*\\}',
             'TAG_LITERAL_OPEN' => '\\{%',

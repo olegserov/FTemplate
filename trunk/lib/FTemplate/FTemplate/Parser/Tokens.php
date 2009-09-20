@@ -10,7 +10,9 @@ class FTemplate_Parser_Tokens extends FTemplate_Parser_Base
         $line = 1;
 
         foreach ($chunks as $chunk) {
-            if ($i++ % 2 == 0) {
+            $i++;
+            if ($chunk === '') continue;
+            if ($i % 2 == 1) {
                 $tokens[] = new FTemplate_Token_Echo_Constant($chunk, $line);
             } else {
                 $tokens[] = $this->_getToken($chunk, $line);

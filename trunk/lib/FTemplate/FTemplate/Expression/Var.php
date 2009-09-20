@@ -2,12 +2,12 @@
 class FTemplate_Expression_Var extends FTemplate_Expression
 {
 
-    public static function getRegEx()
+    public static function getRegExp()
     {
-        return '\$(\w+)((:?\.\w+|\[T_EXPRESSION\])+)';
+        return '\$(\w+)((:?\.\w+|\[T_EXPRESSION\])*)(?=[^\.\[])';
     }
 
-    public function replace(array $matches)
+    public function parse(array $matches)
     {
         // $xxx
         $return = '$this->_vars[\'' . $matches[1] . '\']';
@@ -15,7 +15,7 @@ class FTemplate_Expression_Var extends FTemplate_Expression
         // a.b.c[T_EXPRESSION].e -> ['a']['b']['c'][T_EXPRESSION]['e']
         //@todo add support of: $a.b.c->e.g[T_EXPRESSION]->gg;
         if (!empty($matches[2])) {
-            $tmp = $matches[2];
+            $tmp = ltrim($matches[2], '.');
 
             $tmp = strtr($tmp, array(
                 '[' => "'][",
