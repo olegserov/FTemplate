@@ -34,7 +34,7 @@ class FTemplate_Compiler
 
     protected function _echoHeader($className)
     {
-        echo 'class ', $className, ' extends FTemplate_Template {';
+        echo 'class ', $className, ' extends FTemplate_Template_Base {';
     }
 
     protected function _echoBlock($name = 'main')

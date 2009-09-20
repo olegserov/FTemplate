@@ -18,6 +18,8 @@ class Bootstrap
             dirname(__FILE__),
             $root . '/lib/other',
             $root . '/lib/FTemplate',
+            $root . '/lib/PHPUnit',
+
             get_include_path(), // default path - at the end!
         )));
 

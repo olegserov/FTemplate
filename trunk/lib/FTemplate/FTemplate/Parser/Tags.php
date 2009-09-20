@@ -22,7 +22,7 @@ class FTemplate_Parser_Tags extends FTemplate_Parser_Base
     {
         foreach ($this->_getTags() as $tag) {
             if (preg_match(
-                '/^' . call_user_func(array($tag, 'getRegEx')) . '$/si',
+                '/^' . call_user_func(array($tag, 'getRegExp')) . '$/si',
                 $token->getInput()
             )) {
                 return new $tag($token->getInput());
