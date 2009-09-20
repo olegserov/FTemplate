@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Tag_Echo_Expression extends FTemplate_Tag implements FTemplate_Tag_ICustom
+class FTemplate_Tag_Echo_Expression extends FTemplate_Tag_Base implements FTemplate_Tag_ICustom
 {
 
     protected $_map;

@@ -5,7 +5,7 @@ class FTemplate
      * Cache driver.
      *  * false - cache disabled;
      *  * null - cache not inited yet;
-     * @var FTemplate_ICache
+     * @var FTemplate_Cache_Interface
      */
     protected $_cacheDriver = null;
 
@@ -26,8 +26,8 @@ class FTemplate
             $this->_cacheDriver = false;
         }
 
-        if (!($driver instanceof FTemplate_ICache)) {
-            throw new Exception(get_class($driver) . ' is not instance of FTemplate_ICache');
+        if (!($driver instanceof FTemplate_Cache_Interface)) {
+            throw new Exception(get_class($driver) . ' is not instance of FTemplate_Cache_Interface');
         }
 
         if (is_object($driver)) {

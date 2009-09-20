@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Expression_Var extends FTemplate_Expression
+class FTemplate_Expression_Var extends FTemplate_Expression_Base
 {
 
     public static function getRegExp()

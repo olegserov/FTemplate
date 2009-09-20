@@ -12,7 +12,7 @@ class FTemplate_Parser_Tree_Context
         $this->_name = $name;
     }
 
-    public function push(FTemplate_ITag $tag)
+    public function push(FTemplate_Tag_Interface $tag)
     {
         if ($tag instanceof FTemplate_Tag_ICustom) {
             $this->_handleCustomTag($tag);

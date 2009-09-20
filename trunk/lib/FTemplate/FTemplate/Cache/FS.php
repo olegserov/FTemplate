@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Cache_FS implements FTemplate_ICache
+class FTemplate_Cache_FS implements FTemplate_Cache_Interface
 {
     protected $_cacheDir;
 
