@@ -25,19 +25,26 @@ class FTemplate_Expression
         do {
             foreach ($this->_getExpressions() as $exp) {
                 $this->_expression = $exp;
-                $reg_exp = $exp->getRegExp();
-                $reg_exp = str_replace('T_EXPRESSION', "~[0-9]+~", $reg_exp);
+                $reg_exps = $exp->getRegExp();
 
-                $input = preg_replace_callback(
-                    '/\s*' . $reg_exp . '\s*/six',
-                    array($this, '_parseToken'),
-                    ' ' . $input . ' ',
-                    -1,
-                    $count
-                );
+                if (!is_array($reg_exps)) {
+                    $reg_exps = (array) $reg_exps;
+                }
 
-                if ($count) {
-                    continue;
+                foreach ($reg_exps as $reg_exp) {
+                    $reg_exp = str_replace('T_EXPRESSION', '(?:\\~[0-9]+\\~)', $reg_exp);
+
+                    $input = preg_replace_callback(
+                        '/' . $reg_exp . '/x',
+                        array($this, '_parseToken'),
+                        $input,
+                        -1,
+                        $count
+                    );
+
+                    if ($count) {
+                        continue 3;
+                    }
                 }
             }
         } while ($count);
@@ -58,7 +65,9 @@ class FTemplate_Expression
     protected function _getExpressions()
     {
         $expressions = array(
+            'FTemplate_Expression_StringConstant',
             'FTemplate_Expression_Var',
+            'FTemplate_Expression_Operators',
             'FTemplate_Expression_Constant',
         );
 

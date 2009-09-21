@@ -80,6 +80,7 @@ class PHPUnit_Util_Fileloader
             $filename = './' . $filename;
         }
 
+
         if (!is_readable($filename)) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'existing file');
         }

@@ -34,10 +34,12 @@ class FTemplate_Cache_FS implements FTemplate_Cache_Interface
 
     public function save($path, $stamp, $content)
     {
+
         if ($this->_cacheDir === null || !$stamp) {
             return;
         }
         $cacheFilename = $this->_getCacheFilename($path);
+
         $f = @fopen($cacheFilename, "a+b");
         if (!$f) {
             return;
