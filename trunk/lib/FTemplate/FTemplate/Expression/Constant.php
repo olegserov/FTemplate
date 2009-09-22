@@ -4,7 +4,7 @@ class FTemplate_Expression_Constant extends FTemplate_Expression_Base
 
     public static function getRegExp()
     {
-        return '[a-zA-Z_]\w+';
+        return '(?!\w) [a-zA-Z_]\w+ (?!\w)';
     }
 
     public function parse(array $matches)
