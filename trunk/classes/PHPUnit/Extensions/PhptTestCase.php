@@ -14,7 +14,7 @@ PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 3.1.4
  */
-class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit_Framework_SelfDescribing
+class PHPUnit_Extensions_PhptTestCase extends PHPUnit_Framework_TestCase implements PHPUnit_Framework_SelfDescribing
 {
     /**
      * The filename of the .phpt file.
@@ -112,8 +112,12 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
 
     protected function _runTest()
     {
-        $phpt = new PHPT();
-        $phpt->run($this->filename);
+        try {
+            $phpt = new PHPT();
+            $phpt->run($this->filename);
+        } catch (PHPT_TextDiffException $e) {
+            $this->assertEquals($e->getExpected(), $e->getGot());
+        }
     }
 
     /**

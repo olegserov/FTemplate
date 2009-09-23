@@ -4,7 +4,7 @@ class FTemplate_Expression_Constant extends FTemplate_Expression_Base
 
     public static function getRegExp()
     {
-        return '(?![\d\.])\d+(\.\d+)?(?![\d.])';
+        return '\d+(\.\d+){0,1}';
     }
 
     public function parse(array $matches)
