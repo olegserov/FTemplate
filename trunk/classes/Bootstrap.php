@@ -19,8 +19,6 @@ class Bootstrap
             $root . '/lib/other',
             $root . '/lib/FTemplate',
             $root . '/lib/PHPUnit',
-            'E:\\dev\\self\\php5.2\\PEAR\\', // @todo remove it!
-
             get_include_path(), // default path - at the end!
         )));
 
