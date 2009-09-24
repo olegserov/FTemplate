@@ -23,7 +23,7 @@ left    ,   many uses
 class FTemplate_Expression_Operators extends FTemplate_Expression_Base
 {
     // note that '..' is string concat.
-    protected static $_operators = array(
+    protected $_operators = array(
         '* / %',
         '+ - ..',
         '<< >>',
@@ -36,17 +36,17 @@ class FTemplate_Expression_Operators extends FTemplate_Expression_Base
         '||'
     );
 
-    public static function getRegExp()
+    public function getRegExp()
     {
         $return = array();
-        foreach (self::$_operators as $op) {
+        foreach ($this->_operators as $op) {
             $op = explode(' ', preg_quote($op, '/'));
             $op = '(' . join('|', $op) . ')';
             $return = "
                 (?!$op)
                 (
-                    T_EXPRESSION
-                    ($op T_EXPRESSION)+
+                    T_EXP
+                    ($op T_EXP)+
                 )
                 (?!$op)
             ";

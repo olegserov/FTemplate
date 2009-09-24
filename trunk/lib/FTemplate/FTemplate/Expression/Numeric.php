@@ -2,7 +2,7 @@
 class FTemplate_Expression_Constant extends FTemplate_Expression_Base
 {
 
-    public static function getRegExp()
+    public function getRegExp()
     {
         return '\d+(\.\d+){0,1}';
     }

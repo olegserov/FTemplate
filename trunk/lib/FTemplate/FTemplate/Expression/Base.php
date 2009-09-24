@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Expression_Base
+abstract class FTemplate_Expression_Base implements FTemplate_Expression_Interface
 {
 
 }

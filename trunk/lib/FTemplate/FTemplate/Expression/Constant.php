@@ -1,8 +1,7 @@
 <?php
 class FTemplate_Expression_Constant extends FTemplate_Expression_Base
 {
-
-    public static function getRegExp()
+    public function getRegExp()
     {
         return '[a-zA-Z_]\w+ (?!\w)';
     }
@@ -11,5 +10,4 @@ class FTemplate_Expression_Constant extends FTemplate_Expression_Base
     {
         return $matches[0];
     }
-
 }

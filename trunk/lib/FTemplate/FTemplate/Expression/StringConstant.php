@@ -2,7 +2,7 @@
 class FTemplate_Expression_StringConstant extends FTemplate_Expression_Base
 {
 
-    public static function getRegExp()
+    public function getRegExp()
     {
         return "'(([^']|\\'|\\\\)*)'";
     }

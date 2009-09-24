@@ -2,8 +2,9 @@
 class FTemplate_Expression_Var extends FTemplate_Expression_Base
 {
 
-    public static function getRegExp()
+    public function getRegExp()
     {
+
         /**
          * Allow:
          * $varname
@@ -18,15 +19,15 @@ class FTemplate_Expression_Var extends FTemplate_Expression_Base
         return '
             \$(
                 (?:
-                    \[T_EXPRESSION\]
-                    | \{T_EXPRESSION\}
+                    \[T_EXP\]
+                    | \{T_EXP\}
                     | [a-zA-Z]\w*
                 )
                 (?:
-                    \[T_EXPRESSION\]
+                    \[T_EXP\]
                     | \.[a-zA-Z]\w*
                     | ->[a-zA-Z]\w*
-                    | ->\{T_EXPRESSION\}
+                    | ->\{T_EXP\}
                 )*
             )
 
