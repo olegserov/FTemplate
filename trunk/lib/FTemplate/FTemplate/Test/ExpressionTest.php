@@ -8,7 +8,7 @@ class FTemplate_Test_ExpressionTest
         $pairs = array(
             '4' => '4',
             '$a.b' => '$this->_vars[\'a\'][\'b\']',
-            '1 + 3 * 4' => '1 + 3 * 4',
+            '1 + 3 * 4' => '(1 + (3 * 4))',
 
         );
 

@@ -9,9 +9,11 @@ class FTemplate_Expression_OperatorsTest extends FTemplate_Test_Expression_BaseT
     protected function _getPairs()
     {
         return array(
-            'T_EXP || T_EXP' => 'T_EXP || T_EXP',
-            'T_EXP * T_EXP' => 'T_EXP * T_EXP',
-            'T_EXP * T_EXP / T_EXP' => 'T_EXP * T_EXP / T_EXP',
+            'T_EXP || T_EXP' => '(T_EXP || T_EXP)',
+            'T_EXP * T_EXP' => '(T_EXP * T_EXP)',
+            'T_EXP * T_EXP / T_EXP' => '(T_EXP * T_EXP / T_EXP)',
+            'T_EXP * T_EXP / T_EXP' => '(T_EXP * T_EXP / T_EXP)',
+            'T_EXP .. T_EXP .. T_EXP' => '(T_EXP . T_EXP . T_EXP)',
         );
     }
 }

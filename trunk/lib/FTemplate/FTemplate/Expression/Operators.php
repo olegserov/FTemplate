@@ -45,8 +45,8 @@ class FTemplate_Expression_Operators extends FTemplate_Expression_Base
             $return[] = "
 
                 (
-                    T_EXP \\s*
-                    ($op \\s* T_EXP)+
+                    T_EXP
+                    (\\s* $op \\s* T_EXP)+
                 )
 
             ";
@@ -57,7 +57,7 @@ class FTemplate_Expression_Operators extends FTemplate_Expression_Base
 
     public function parse(array $matches)
     {
-        return $matches[0];
+        return '(' . str_replace('..', '.', $matches[0]) . ')';
     }
 
 }
