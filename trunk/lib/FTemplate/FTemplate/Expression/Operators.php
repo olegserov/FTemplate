@@ -42,15 +42,16 @@ class FTemplate_Expression_Operators extends FTemplate_Expression_Base
         foreach ($this->_operators as $op) {
             $op = explode(' ', preg_quote($op, '/'));
             $op = '(' . join('|', $op) . ')';
-            $return = "
-                (?!$op)
+            $return[] = "
+
                 (
-                    T_EXP
-                    ($op T_EXP)+
+                    T_EXP \\s*
+                    ($op \\s* T_EXP)+
                 )
-                (?!$op)
+
             ";
         }
+
         return $return;
     }
 

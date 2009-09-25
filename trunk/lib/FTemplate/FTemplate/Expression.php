@@ -10,6 +10,7 @@ class FTemplate_Expression
     protected $_key;
 
     protected $_expressions = array();
+
     protected $_expressionsRegExp = array();
 
     protected function _reset()
@@ -20,7 +21,7 @@ class FTemplate_Expression
 
     protected function _parseExpression(array $matches)
     {
-        $this->_lastName = '~' . count($this->_map) . '~';
+        $this->_lastName = '~' . count($this->_mapReplace) . '~';
 
         $this->_mapReplace[$this->_lastName]
             = $this->_expressions[$this->_key]->parse($matches);
@@ -29,7 +30,6 @@ class FTemplate_Expression
 
         return $this->_lastName;
     }
-
 
     public function parse($input, $context)
     {
@@ -50,7 +50,7 @@ class FTemplate_Expression
                         $reg_exps,
                         array($this, '_parseExpression'),
                         $input,
-                        null,
+                        -1,
                         $count
                     );
 
@@ -76,13 +76,14 @@ class FTemplate_Expression
 
     public function prepareRegExp($regExp)
     {
-        return '/' . str_replace('T_EXP', '(?:\\~[0-9]+\\~)', $regExp) . '/x';
+        return '/' . str_replace('T_EXP', '(?:\\~[0-9]+\\~)', $regExp) . '/isx';
     }
 
     public function __construct()
     {
         $expressions = array(
             'FTemplate_Expression_StringConstant',
+            'FTemplate_Expression_Numeric',
             'FTemplate_Expression_Var',
             'FTemplate_Expression_Operators',
             'FTemplate_Expression_Constant',

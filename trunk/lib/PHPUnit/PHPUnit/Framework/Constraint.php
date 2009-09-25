@@ -100,6 +100,10 @@ abstract class PHPUnit_Framework_Constraint implements Countable, PHPUnit_Framew
      */
     protected function failureDescription($other, $description, $not)
     {
+        if (!is_scalar($description)) {
+            $description = var_export($description, 1);
+        }
+
         $failureDescription = $this->customFailureDescription(
           $other, $description, $not
         );
@@ -118,6 +122,7 @@ abstract class PHPUnit_Framework_Constraint implements Countable, PHPUnit_Framew
         }
 
         if (!empty($description)) {
+
             $failureDescription = $description . "\n" . $failureDescription;
         }
 

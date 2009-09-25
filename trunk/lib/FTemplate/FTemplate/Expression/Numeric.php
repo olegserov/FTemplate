@@ -1,10 +1,10 @@
 <?php
-class FTemplate_Expression_Constant extends FTemplate_Expression_Base
+class FTemplate_Expression_Numeric extends FTemplate_Expression_Base
 {
 
     public function getRegExp()
     {
-        return '\d+(\.\d+){0,1}';
+        return ' \d+(\.\d+)? (?![\d\~])';
     }
 
     public function parse(array $matches)

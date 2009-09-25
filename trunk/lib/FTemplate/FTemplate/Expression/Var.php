@@ -66,9 +66,9 @@ class FTemplate_Expression_Var extends FTemplate_Expression_Base
                 case ']': case '}': continue;
 
                 case '[':
-                    $exp = true;
                     $object = false;
-                    break;
+                    $exp = true;
+                    break; //You can remove it for
 
                 case '{':
                     $exp = true;
