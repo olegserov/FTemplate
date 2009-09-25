@@ -14,7 +14,7 @@ PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 3.1.4
  */
-class PHPUnit_Extensions_PhptTestCase extends PHPUnit_Framework_TestCase implements PHPUnit_Framework_SelfDescribing
+class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_SelfDescribing, PHPUnit_Framework_Test
 {
     /**
      * The filename of the .phpt file.
@@ -22,6 +22,7 @@ class PHPUnit_Extensions_PhptTestCase extends PHPUnit_Framework_TestCase impleme
      * @var    string
      */
     protected $filename;
+
 
     /**
      * Constructs a test case with the given filename.
@@ -70,32 +71,9 @@ class PHPUnit_Extensions_PhptTestCase extends PHPUnit_Framework_TestCase impleme
             $result = new PHPUnit_Framework_TestResult;
         }
 
-        $error   = FALSE;
-        $failure = FALSE;
-
-        $result->startTest($this);
-
-
-
-        PHPUnit_Util_Timer::start();
-
-        try {
-            $this->_runTest();
-        } catch (PHPUnit_Framework_AssertionFailedError $e) {
-            $failure = TRUE;
-        } catch (Exception $e) {
-            $error = TRUE;
-        }
-
-        $time = PHPUnit_Util_Timer::stop();
-
-        if ($error === TRUE) {
-            $result->addError($this, $e, $time);
-        } else if ($failure === TRUE) {
-            $result->addFailure($this, $e, $time);
-        }
-
-        $result->endTest($this, $time);
+        $result->run(
+            new PHPUnit_Extensions_PhptTestCaseStub($this->filename)
+        );
 
         return $result;
     }
@@ -112,12 +90,7 @@ class PHPUnit_Extensions_PhptTestCase extends PHPUnit_Framework_TestCase impleme
 
     protected function _runTest()
     {
-        try {
-            $phpt = new PHPT();
-            $phpt->run($this->filename);
-        } catch (PHPT_TextDiffException $e) {
-            $this->assertEquals($e->getExpected(), $e->getGot());
-        }
+
     }
 
     /**
@@ -130,4 +103,38 @@ class PHPUnit_Extensions_PhptTestCase extends PHPUnit_Framework_TestCase impleme
         return $this->filename;
     }
 }
-?>
+
+class PHPUnit_Extensions_PhptTestCaseStub
+    extends PHPUnit_Framework_TestCase
+{
+    private $_file;
+
+    public function __construct($file)
+    {
+        $this->_file = $file;
+    }
+
+    public function runBare()
+    {
+        try {
+            $phpt = new PHPT();
+            $phpt->run($this->_file);
+        } catch (PHPT_TextDiffException $e) {
+            $this->assertEquals($e->getExpected(), $e->getGot(), $this->_file);
+        }
+    }
+
+    public function run(PHPUnit_Framework_TestResult $result = NULL)
+    {
+        throw new Exception('Do not call!');
+    }
+
+    public function count() {
+        return 1;
+    }
+
+    public function getName()
+    {
+        return 'getName';
+    }
+}

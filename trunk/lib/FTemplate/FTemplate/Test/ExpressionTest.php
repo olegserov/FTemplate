@@ -9,6 +9,7 @@ class FTemplate_Test_ExpressionTest
             '4' => '4',
             '$a.b' => '$this->_vars[\'a\'][\'b\']',
             '1 + 3 * 4' => '(1 + (3 * 4))',
+            '1 .. 3 * 4 % 1' => '(1 . (3 * 4 % 1))',
 
         );
 
