@@ -15,16 +15,16 @@ class FTemplate_Cache_FS implements FTemplate_Cache_Interface
         }
     }
 
-    public function load($path, $stamp)
+    public function load(FTemplate_Template_Skel $skel)
     {
-        if ($this->_cacheDir === null || !$stamp) {
+        if ($this->_cacheDir === null) {
             return false;
         }
 
-        $cacheFilename = $this->_getCacheFilename($path);
+        $cacheFilename = $this->_getCacheFilename($skel->getFile());
 
         // Read from cache with 1 second gap (for safety).
-        if (abs(@filemtime($cacheFilename) - $stamp) <= 1) {
+        if (abs(@filemtime($cacheFilename) - $skel->getFileStamp()) <= 1) {
             include_once $cacheFilename;
             return true;
         }
@@ -32,13 +32,13 @@ class FTemplate_Cache_FS implements FTemplate_Cache_Interface
         return false;
     }
 
-    public function save($path, $stamp, $content)
+    public function save(FTemplate_Template_Skel $skel)
     {
 
-        if ($this->_cacheDir === null || !$stamp) {
+        if ($this->_cacheDir === null) {
             return;
         }
-        $cacheFilename = $this->_getCacheFilename($path);
+        $cacheFilename = $this->_getCacheFilename($skel->getFile());
 
         $f = @fopen($cacheFilename, "a+b");
         if (!$f) {
@@ -46,12 +46,14 @@ class FTemplate_Cache_FS implements FTemplate_Cache_Interface
         }
         flock($f, LOCK_EX);
         ftruncate($f, 0);
-        fwrite($f, $content);
+        fwrite($f, $skel->getCode());
         fclose($f);
+
         $old = umask(0);
         @chmod($cacheFilename, 0666);
         umask($old);
-        touch($cacheFilename, $stamp);
+
+        touch($cacheFilename, $skel->getFileStamp());
     }
 
     private function _getCacheFilename($path)

@@ -1,21 +1,19 @@
 <?php
 class FTemplate_Parser_Tags extends FTemplate_Parser_Base
 {
-    public function get(array $tokens)
+    public function get(FTemplate_Template_Skel $skel)
     {
-        foreach ($tokens as $i => $token) {
+        foreach ($skel->tokens as $i => $token) {
             if ($token instanceof FTemplate_Token_Tag) {
-                $tokens[$i] = $this->_parseTag($token);
+                $skel->tokens[$i] = $this->_parseTag($token);
             } elseif ($token instanceof FTemplate_Token_Echo_Constant) {
-                $tokens[$i] = new FTemplate_Tag_Echo_Constant($token->getInput());
+                $skel->tokens[$i] = new FTemplate_Tag_Echo_Constant($token->getInput());
             } elseif ($token instanceof FTemplate_Token_Null) {
-                $tokens[$i] = new FTemplate_Tag_Null($token->getInput());
+                $skel->tokens[$i] = new FTemplate_Tag_Null($token->getInput());
             } else {
-                throw new Exception('wtf?');
+                throw new FTemplate_Exception('Parser error: Undefined token: ' . print_r($token, 1));
             }
         }
-
-        return $tokens;
     }
 
     protected function _parseTag(FTemplate_Token_Tag $token)

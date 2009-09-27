@@ -8,7 +8,7 @@ class FTemplate_Tag_Echo_Expression extends FTemplate_Tag_Base implements FTempl
 
     public function getCode()
     {
-        return sprintf("echo %s;", $this->_input);
+        return 'echo ' . $this->_input . ';';
     }
 
     public function parse($context)

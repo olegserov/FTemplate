@@ -1,54 +1,53 @@
 <?php
 class FTemplate_Compiler
 {
-    public function compile($tree, $className)
+    protected $_skel;
+
+    public function compile(FTemplate_Template_Skel $skel)
     {
-        ob_start();
+        $this->_skel = $skel;
 
-        $this->_echoHeader($className);
 
-        try {
-            foreach ($tree as $method => $context) {
-                $this->_echoMethod($method, $context);
-            }
-        } catch (Exception $e) {
-            ob_flush();
-            throw $e;
+        $this->_addHeader($skel->getClass());
+
+        foreach ($skel->tree as $method => $context) {
+            $this->_addMethod($method, $context);
         }
 
-        $this->_echoFooter();
+        $this->_addFooter();
 
-        return ob_get_clean();
+
+        $this->_skel = null;
     }
 
-    protected function _echoMethod($method, $context)
+    protected function _addMethod($method, $context)
     {
-        $this->_echoBlock($method);
+        $this->_addBlock($method);
 
         foreach ($context->getTree() as $node) {
-            echo $node->getCode();
+            $this->_skel->code .= $node->getCode();
         }
 
-        $this->_echoEndBlock();
+        $this->_addEndBlock();
     }
 
-    protected function _echoHeader($className)
+    protected function _addHeader($className)
     {
-        echo 'class ', $className, ' extends FTemplate_Template_Base {';
+        $this->_skel->code .= 'class ' . $className . ' extends FTemplate_Template_Base {';
     }
 
-    protected function _echoBlock($name = 'main')
+    protected function _addBlock($name = 'main')
     {
-        echo 'public function ' . $name . '(){';
+        $this->_skel->code .= 'public function ' . $name . '(){';
     }
 
-    protected function _echoEndBlock()
+    protected function _addEndBlock()
     {
-        echo '}';
+        $this->_skel->code .= '}';
     }
 
-    protected function _echoFooter()
+    protected function _addFooter()
     {
-        echo '}';
+        $this->_skel->code .= '}';
     }
 }

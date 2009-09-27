@@ -1,7 +1,7 @@
 <?php
 interface FTemplate_Cache_Interface
 {
-    public function load($name, $time);
+    public function load(FTemplate_Template_Skel $skel);
 
-    public function save($name, $time, $code);
+    public function save(FTemplate_Template_Skel $skel);
 }

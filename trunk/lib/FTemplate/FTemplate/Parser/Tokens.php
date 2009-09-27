@@ -1,27 +1,29 @@
 <?php
 class FTemplate_Parser_Tokens extends FTemplate_Parser_Base
 {
-    public function get(array $chunks)
+    public function get(FTemplate_Template_Skel $skel)
     {
-        $tokens = array();
+        $skel->tokens = array();
 
         $i = 0;
 
         $line = 1;
 
-        foreach ($chunks as $chunk) {
+        foreach ($skel->chunks as $chunk) {
             $i++;
+
             if ($chunk === '') continue;
+
             if ($i % 2 == 1) {
-                $tokens[] = new FTemplate_Token_Echo_Constant($chunk, $line);
+                $skel->tokens[] = new FTemplate_Token_Echo_Constant($chunk, $line);
             } else {
-                $tokens[] = $this->_getToken($chunk, $line);
+                $skel->tokens[] = $this->_getToken($chunk, $line);
             }
 
             $line += substr_count("\n", $chunk);
         }
 
-        return $tokens;
+        $skel->chunks = null;
     }
 
     protected function _getToken($chunk, $line)

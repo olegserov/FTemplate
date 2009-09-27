@@ -35,22 +35,11 @@ class FTemplate_Parser
         $this->_parserTree = new FTemplate_Parser_Tree($this);
     }
 
-    /**
-     * Parse template
-     *
-     * @param $content
-     * @return array tree
-     */
-    public function parse($content)
+    public function parse(FTemplate_Template_Skel $skel)
     {
-        return
-
-        $this->_parserTree->get(
-            $this->_parserTags->get(
-                $this->_parserTokens->get(
-                    $this->_parserChunks->get($content)
-                )
-            )
-        );
+        $this->_parserChunks->get($skel);
+        $this->_parserTokens->get($skel);
+        $this->_parserTags->get($skel);
+        $this->_parserTree->get($skel);
     }
 }

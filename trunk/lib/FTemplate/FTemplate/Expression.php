@@ -62,7 +62,7 @@ class FTemplate_Expression
         } while ($count);
 
         if (trim($input) != $this->_lastName) {
-            throw new Exception('Undefined expression: ' . var_export($input, 1));
+            throw new FTemplate_Exception('Undefined expression: ' . var_export($input, 1));
         }
 
         $this->_mapReplace = array_reverse($this->_mapReplace);

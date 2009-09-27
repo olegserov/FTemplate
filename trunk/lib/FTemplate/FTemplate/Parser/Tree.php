@@ -1,29 +1,26 @@
 <?php
 class FTemplate_Parser_Tree extends FTemplate_Parser_Base
 {
-    protected $_tree;
+    protected $_skel;
     protected $_offset;
     protected $_total;
-    protected $_tags;
 
-    public function get($tags)
+
+    public function get(FTemplate_Template_Skel $skel)
     {
         $this->_offset = 0;
-        $this->_total = count($tags);
-        $this->_tags = $tags;
-        $this->_tree = array();
+        $this->_total = count($skel->tokens);
+        $this->_skel = $skel;
 
         $this->_compileTree('main');
-
-        return $this->_tree;
     }
 
     protected function _initContext($name)
     {
-        if (isset($this->_tree[$name])) {
+        if (isset($this->_skel->tree[$name])) {
             throw new Exception('Context already defined');
         }
-        return $this->_tree[$name] = new FTemplate_Parser_Tree_Context($name);
+        return $this->_skel->tree[$name] = new FTemplate_Parser_Tree_Context($name);
     }
 
     protected function _compileTree($name)
@@ -32,7 +29,7 @@ class FTemplate_Parser_Tree extends FTemplate_Parser_Base
 
         for (;$this->_offset < $this->_total; $this->_offset++) {
             try {
-                $context->push($this->_tags[$this->_offset]);
+                $context->push($this->_skel->tokens[$this->_offset]);
             } catch (FTemplate_Praser_Tree_SwitchContextException $e) {
                 $this->_compileTree($e->getName());
             }

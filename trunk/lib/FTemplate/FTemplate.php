@@ -11,6 +11,18 @@ class FTemplate
 
     protected $_vars = array();
 
+    /**
+     * The compiler
+     * @var FTemplate_Compiler
+     */
+    protected $_compiler;
+
+    /**
+     * The parser
+     * @var FTemplate_Parser
+     */
+    protected $_parser;
+
     public function assign($name, $value = null)
     {
         if (is_array($name)) {
@@ -39,77 +51,91 @@ class FTemplate
         }
     }
 
-    protected function _loadFile($origFile)
+    /**
+     * Gets cache driver
+     * @return FTemplate_Cache_Interface
+     */
+    public function getCacheDriver()
     {
-        $file = realpath($origFile);
-
-        if (!$file) {
-            throw new Exception('File: ' . $origFile . ' Not found');
-        }
-
-        $file_m_time = filemtime($file);
-        $class_name = $this->_fileToClass($file);
-
-        // Loaded in php
-        if (class_exists($class_name, false)) {
-            return $class_name;
-        }
-
         // Cache driver is not inited
         if ($this->_cacheDriver === null) {
             $this->_cacheDriver = new FTemplate_Cache_FS();
         }
 
+        return $this->_cacheDriver;
+    }
 
+    protected function _loadFile($origFile)
+    {
 
-        // Caching is allowed
-        if ($this->_cacheDriver) {
-            if ($this->_cacheDriver->load($class_name, $file_m_time)) {
-                return $class_name;
-            }
+        $skel = new FTemplate_Template_Skel($origFile);
+
+        // Loaded in php
+        if (class_exists($skel->getClass(), false)) {
+            return $skel;
         }
 
-        $code = $this->_compile(file_get_contents($file), $class_name);
+        if (
+            $this->getCacheDriver()
+            && $this->getCacheDriver()->load($skel)
+        ) {
+            return $skel;
+        }
+
+        $this->_compile($skel);
 
         //Caching is allowed
-        if ($this->_cacheDriver) {
-            $this->_cacheDriver->save($class_name, $file_m_time, $code);
+        if ($this->getCacheDriver()) {
+            $this->getCacheDriver()->save($skel);
         }
 
-        //echo $code;
+        eval($skel->getCode());
 
-        eval($code);
-
-
-
-        return $class_name;
+        return $skel;
     }
 
     public function display($origFile)
     {
-        $class_name = $this->_loadFile($origFile);
-        $this->_call($class_name);
+        $skel = $this->_loadFile($origFile);
+        $this->_call($skel);
     }
 
-    protected function _call($className, $method = 'main')
+    protected function _call(FTemplate_Template_Skel $skel, $method = 'main')
     {
-        $ob = new $className($this->_vars);
+        $class = $skel->getClass();
+        $ob = new $class($this->_vars);
         $ob->$method();
     }
 
-    protected function _fileToClass($file)
+    /**
+     * Gets parser
+     * @return FTemplate_Parser
+     */
+    public function getParser()
     {
-        return 'FTemplate_Compiled_' . preg_replace('/\W/', '_', $file);
+        if (!$this->_parser) {
+            $this->_parser = new FTemplate_Parser();
+        }
+
+        return $this->_parser;
     }
 
-    protected function _compile($text, $className)
+    /**
+     * Gets compiler
+     * @return FTemplate_Compiler
+     */
+    public function getCompiler()
     {
-        $parser = new FTemplate_Parser();
-        $tree = $parser->parse($text);
+        if (!$this->_compiler) {
+            $this->_compiler = new FTemplate_Compiler();
+        }
 
-        $compiler = new FTemplate_Compiler();
-        $code = $compiler->compile($tree, $className);
+        return $this->_compiler;
+    }
 
-        return $code;
+    protected function _compile($skel)
+    {
+        $this->getParser()->parse($skel);
+        $this->getCompiler()->compile($skel);
     }
 }
