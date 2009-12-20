@@ -30,12 +30,16 @@ class PHPT
             $parts[2] = null;
         }
 
-        $f = tempnam("non-existed", '');
+        $f = dirname(tempnam("non-existed", ''))
+            . '/'
+            . preg_replace('/\W+/', '_', $file)
+            . '.tmp';
+
         file_put_contents($f, $parts[1]);
 
         $code = "\$ft = new FTemplate();\n"
             . $parts[0]
-            . "\$ft->assign(get_defined_vars()); echo \$ft->display('$f');";
+            . "\$ft->display('$f', get_defined_vars());";
 
         return array($code, $parts[2]);
     }

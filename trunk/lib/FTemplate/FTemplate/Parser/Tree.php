@@ -15,17 +15,22 @@ class FTemplate_Parser_Tree extends FTemplate_Parser_Base
         $this->_compileTree('main');
     }
 
-    protected function _initContext($name)
+    protected function _createContext($name)
     {
         if (isset($this->_skel->tree[$name])) {
             throw new Exception('Context already defined');
         }
-        return $this->_skel->tree[$name] = new FTemplate_Parser_Tree_Context($name);
+        return $this->_skel->tree[$name]
+            = new FTemplate_Parser_Tree_Context(
+                $this->_parser,
+                $this->_skel,
+                $name
+            );
     }
 
     protected function _compileTree($name)
     {
-        $context = $this->_initContext($name);
+        $context = $this->_createContext($name);
 
         for (;$this->_offset < $this->_total; $this->_offset++) {
             try {

@@ -31,9 +31,11 @@ class FTemplate_Expression
         return $this->_lastName;
     }
 
-    public function parse($input, $context)
+    public function parse(FTemplate_Token_Base $token, FTemplate_Parser_Tree_Context $context)
     {
         $this->_reset();
+
+        $input = $token->getInput();
 
         if (empty($input)) {
             throw new Exception('Empty input');
@@ -62,7 +64,7 @@ class FTemplate_Expression
         } while ($count);
 
         if (trim($input) != $this->_lastName) {
-            throw new FTemplate_Exception('Undefined expression: ' . var_export($input, 1));
+            throw new FTemplate_Parser_Exception('Undefined expression: ' . $input, $token, $context);
         }
 
         $this->_mapReplace = array_reverse($this->_mapReplace);
@@ -85,6 +87,7 @@ class FTemplate_Expression
             'FTemplate_Expression_StringConstant',
             'FTemplate_Expression_Numeric',
             'FTemplate_Expression_Var',
+            'FTemplate_Expression_RoundBracket',
             'FTemplate_Expression_Operators',
             'FTemplate_Expression_Constant',
         );

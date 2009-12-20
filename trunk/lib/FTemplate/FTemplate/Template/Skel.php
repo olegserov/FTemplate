@@ -2,14 +2,10 @@
 class FTemplate_Template_Skel
 {
     protected $_file;
-    protected $_fileStamp;
-    protected $_class;
 
-    // For parsing:
-    public $chunks = array();
-    public $tokens = array();
-    public $tree = array();
-    public $code = null;
+    protected $_fileStamp;
+
+    protected $_class;
 
     public function __construct($origFile)
     {
@@ -24,7 +20,7 @@ class FTemplate_Template_Skel
         $this->_class = 'FTemplate_Compiled_' . preg_replace('/\W/', '_', $file);
     }
 
-    public function getClass()
+    public function getClassName()
     {
         return $this->_class;
     }
@@ -42,10 +38,4 @@ class FTemplate_Template_Skel
     public function getFileContent()
     {
         return file_get_contents($this->_file);
-    }
-
-    public function getCode()
-    {
-        return $this->code;
-    }
-}
+    }}

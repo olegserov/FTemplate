@@ -24,6 +24,12 @@ class FTemplate_Parser
 
 
     /**
+     * Expression parser
+     * @var FTemplate_Expression
+     */
+    protected $_parserExpression;
+
+    /**
      * Construct
      *
      */
@@ -33,6 +39,19 @@ class FTemplate_Parser
         $this->_parserTokens = new FTemplate_Parser_Tokens($this);
         $this->_parserTags = new FTemplate_Parser_Tags($this);
         $this->_parserTree = new FTemplate_Parser_Tree($this);
+    }
+
+    /**
+     * Gets expression parser
+     * @return FTemplate_Expression
+     */
+    public function getExpressionParser()
+    {
+        if (!$this->_parserExpression) {
+            $this->_parserExpression = new FTemplate_Expression($this);
+        }
+
+        return $this->_parserExpression;
     }
 
     public function parse(FTemplate_Template_Skel $skel)

@@ -17,6 +17,7 @@ class FTemplate_Expression_Var extends FTemplate_Expression_Base
          *
          */
         return '
+            (?<!\$)
             \$(
                 (?:
                     \[T_EXP\]
@@ -31,7 +32,7 @@ class FTemplate_Expression_Var extends FTemplate_Expression_Base
                 )*
             )
 
-            (?!(\[|\{|\.|->))
+            (?!(\[|\{|\.|->|\w))
         ';
     }
 

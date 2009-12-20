@@ -1,13 +1,12 @@
 <?php
 class FTemplate_Parser_Base
 {
-    protected $_context;
+    protected $_parser;
 
-    public function __construct(FTemplate_Parser $context)
+    public function __construct(FTemplate_Parser $parser)
     {
-        $this->_context = $context;
+        $this->_parser = $parser;
     }
-
 
     protected function _makeRegex($str)
     {

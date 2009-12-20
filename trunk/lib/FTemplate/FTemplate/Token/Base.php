@@ -15,4 +15,9 @@ abstract class FTemplate_Token_Base
     {
         return $this->_input;
     }
+
+    public function getLine()
+    {
+        return $this->_line;
+    }
 }
