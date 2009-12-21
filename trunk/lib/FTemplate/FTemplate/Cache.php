@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Cache
+class FTemplate_Cache extends FTemplate_Base
 {
     /**
      * Cache driver.

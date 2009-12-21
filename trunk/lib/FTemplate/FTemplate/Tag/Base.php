@@ -1,12 +1,7 @@
 <?php
-abstract class FTemplate_Tag_Base implements FTemplate_Tag_Interface
+abstract class FTemplate_Tag_Base
 {
-    protected $_token;
-    protected $_key;
-
-    public function __construct(FTemplate_Token_Base $token, $key = null)
+    public function __construct()
     {
-        $this->_key = $key;
-        $this->_token = $token;
     }
 }

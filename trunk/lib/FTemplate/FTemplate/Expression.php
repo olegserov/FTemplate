@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Expression
+class FTemplate_Expression extends FTemplate_Base
 {
     protected $_mapReplace;
 

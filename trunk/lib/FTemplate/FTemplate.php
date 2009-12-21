@@ -17,6 +17,8 @@ class FTemplate extends FTemplate_Manager
             return $skel;
         }
 
+        $this->getParser()->parse($skel);
+
         $this->getCompiler()->compile($skel);
 
         $this->getCache()->save($skel);

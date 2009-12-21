@@ -1,6 +1,5 @@
 <?php
-class FTemplate_Test_ExpressionTest
-    extends PHPUnit_Framework_TestCase
+class FTemplate_Test_ExpressionTest extends PHPUnit_Framework_TestCase
 {
     public function testGeneral()
     {

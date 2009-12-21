@@ -1,64 +1,102 @@
 <?php
-class FTemplate_Parser
+class FTemplate_Parser extends FTemplate_Manager
 {
-
     /**
-     * @var FTemplate_Parser_Chunks
+     * Tags
+     * @var FTemplate_Tag_Interface[][]
      */
-    protected $_parserChunks;
+    protected $_tags;
 
-    /**
-     * @var FTemplate_Parser_Tags
-     */
-    protected $_parserTags;
-
-    /**
-     * @var FTemplate_Parser_Tokens
-     */
-    protected $_parserTokens;
-
-    /**
-     * @var FTemplate_Parser_Tree
-     */
-    protected $_parserTree;
-
-
-    /**
-     * Expression parser
-     * @var FTemplate_Expression
-     */
-    protected $_parserExpression;
-
-    /**
-     * Construct
-     *
-     */
-    public function __construct()
+    public function addTag($tag, $order = 10)
     {
-        $this->_parserChunks = new FTemplate_Parser_Chunks($this);
-        $this->_parserTokens = new FTemplate_Parser_Tokens($this);
-        $this->_parserTags = new FTemplate_Parser_Tags($this);
-        $this->_parserTree = new FTemplate_Parser_Tree($this);
-    }
-
-    /**
-     * Gets expression parser
-     * @return FTemplate_Expression
-     */
-    public function getExpressionParser()
-    {
-        if (!$this->_parserExpression) {
-            $this->_parserExpression = new FTemplate_Expression($this);
+        if (!($tag instanceof FTemplate_Tag_Interface)) {
+            throw new Exception(get_class($tag) . ' is not instance of FTemplate_Tag_Interface');
         }
 
-        return $this->_parserExpression;
+        if (is_object($tag)) {
+            ; // none
+        } elseif (!class_exists($tag)) {
+            throw new Exception($tag . ' not found');
+        } else {
+            $tag = new $tag;
+        }
+
+        foreach ($tag->getTags() as $regex => $callback) {
+            $this->_tags[$order][$regex] = array($tag, $callback);
+        }
+
+        ksort($this->_tags);
     }
 
     public function parse(FTemplate_Template_Skel $skel)
     {
-        $this->_parserChunks->get($skel);
-        $this->_parserTokens->get($skel);
-        $this->_parserTags->get($skel);
-        $this->_parserTree->get($skel);
+        $this->_parseRaw($skel);
+        $this->_parseChunks($skel);
+    }
+
+    protected function _parseRaw(FTemplate_Template_Skel $skel)
+    {
+        $skel->chunks = preg_split(
+            $this->_makeRegex('/(
+                  TAG_OPEN SOMETHING TAG_CLOSE
+               |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE
+               |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE
+            )/sx'),
+            $skel->getFileContent(),
+            0,
+            PREG_SPLIT_DELIM_CAPTURE
+        );
+    }
+
+    protected function _parseChunks(FTemplate_Template_Skel $skel)
+    {
+        $skel->context = new FTemplate_Compiler_Context();
+
+        $i = 0;
+
+        $line = 1;
+
+        foreach ($skel->chunks as $chunk) {
+            $i++;
+
+            if ($chunk === '') continue;
+
+            if ($i % 2 == 1) {
+                $skel->tokens[] = new FTemplate_Token_Echo_Constant($chunk, $line);
+            } else {
+                $skel->tokens[] = $this->_getToken($chunk, $line);
+            }
+
+            $line += substr_count("\n", $chunk);
+        }
+
+        $skel->chunks = null;
+    }
+
+    protected function _parseChunk($chunk, $line)
+    {
+        foreach ($this->_tags as $group) {
+            foreach ($group as $regex => $ob) {
+                if (preg_match($regex, $chunk)) {
+                    $ob[0]->{$ob[1]}();
+                }
+            }
+        }
+    }
+
+    protected function _makeRegex($str)
+    {
+        $dic = array(
+            'TAG_OPEN' => '\\{',
+            'TAG_CLOSE' => '\\}\n?',
+            'TAG_COMMENT_OPEN' => '\\{\\*',
+            'TAG_COMMENT_CLOSE' => '\\*\\}',
+            'TAG_LITERAL_OPEN' => '\\{%',
+            'TAG_LITERAL_CLOSE' => '%\\}',
+            'SOMETHING' => '.*?'
+        );
+
+        $str = strtr($str, $dic);
+        return $str;
     }
 }
