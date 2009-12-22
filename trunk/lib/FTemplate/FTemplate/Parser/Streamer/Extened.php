@@ -9,6 +9,13 @@ class FTemplate_Compiler_Parser_Streamer_Extened
      */
     public function expectString($string, $named = null)
     {
-        return $this->expect(preg_quote($string), $named);
+        if (is_array($string)) {
+            return $this->expect(
+                join('|', array_map($string, 'preg_qutoe')),
+                $named
+            );
+        } else {
+            return $this->expect(preg_quote($string), $named);
+        }
     }
 }

@@ -50,7 +50,7 @@ class FTemplate_Parser extends FTemplate_Manager
 
     protected function _parseChunks(FTemplate_Template_Skel $skel)
     {
-        $skel->context = new FTemplate_Compiler_Context();
+        $skel->context = new FTemplate_Compiler_Context($skel);
 
         $i = 0;
 
@@ -62,9 +62,14 @@ class FTemplate_Parser extends FTemplate_Manager
             if ($chunk === '') continue;
 
             if ($i % 2 == 1) {
-                $skel->tokens[] = new FTemplate_Token_Echo_Constant($chunk, $line);
+                $this->_createTag(
+                    '',
+                    'echoRaw',
+                    $skel->context,
+                    $skel->context->createNode($chunk, $line)
+                );
             } else {
-                $skel->tokens[] = $this->_getToken($chunk, $line);
+                $this->_parseChunk($chunk, $line, $skel->context);
             }
 
             $line += substr_count("\n", $chunk);
@@ -73,15 +78,28 @@ class FTemplate_Parser extends FTemplate_Manager
         $skel->chunks = null;
     }
 
-    protected function _parseChunk($chunk, $line)
+    protected function _parseChunk($chunk, $line, $context)
     {
+        $node = $context->createNode($chunk, $line);
+
         foreach ($this->_tags as $group) {
             foreach ($group as $regex => $ob) {
                 if (preg_match($regex, $chunk)) {
-                    $ob[0]->{$ob[1]}();
+                    $this->_createTag($ob[0], $ob[1], $context, $node);
+                    return;
                 }
             }
         }
+
+        $context->error('Error! unknown tag!');
+    }
+
+    protected function _createTag($tagClass, $tagMethod, $context, $node)
+    {
+        $node->setClass($tagClass);
+        $node->setType($tagMethod);
+
+        $tagClass->$tagMethod($context, $node);
     }
 
     protected function _makeRegex($str)
