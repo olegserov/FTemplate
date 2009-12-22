@@ -53,6 +53,7 @@ class FTemplate_Tag_Block_Logic_If extends FTemplate_Tag_Block_Base
                 self::TAG_ELSEIF
             )
         );
+
         $context->levelDown();
     }
 
