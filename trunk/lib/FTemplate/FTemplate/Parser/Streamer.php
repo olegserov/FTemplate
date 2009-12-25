@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Compiler_Parser_Streamer
+class FTemplate_Parser_Streamer
 {
     /**
      * Parsed data
@@ -36,10 +36,10 @@ class FTemplate_Compiler_Parser_Streamer
 
     /**
      * Expect pattern in straem
-     * @throws FTemplate_Compiler_Parser_Streamer_Exception if string not found
+     * @throws FTemplate_Parser_Streamer_Exception if string not found
      * @param $regex pattern
      * @param $named named pattern
-     * @return FTemplate_Compiler_Parser_Streamer
+     * @return FTemplate_Parser_Streamer
      */
     public function expect($regex, $named = null)
     {
@@ -87,7 +87,7 @@ class FTemplate_Compiler_Parser_Streamer
      */
     public function errorNotExpected($what)
     {
-        throw new FTemplate_Compiler_Parser_Streamer_Exception(
+        throw new FTemplate_Parser_Streamer_Exception(
             "Expected: $what got: $this->_left"
         );
     }

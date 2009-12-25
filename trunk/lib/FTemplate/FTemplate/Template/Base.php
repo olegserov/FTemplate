@@ -7,4 +7,9 @@ class FTemplate_Template_Base
     {
         $this->_vars = $vars;
     }
+
+    public function show($name)
+    {
+        echo $name;
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Compiler_Parser_Streamer_Exception extends FTemplate_Exception
+class FTemplate_Parser_Streamer_Exception extends FTemplate_Exception
 {
 
 }

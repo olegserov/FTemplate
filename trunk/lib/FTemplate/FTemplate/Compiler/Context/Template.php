@@ -22,4 +22,15 @@ class FTemplate_Compiler_Context_Template
 
         $this->_args[$name] = $default;
     }
+
+    protected function _checkName($name)
+    {
+
+    }
+
+    public function getQuotedName()
+    {
+
+    }
+
 }

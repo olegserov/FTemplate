@@ -1,10 +1,17 @@
 <?php
-class FTemplate_Tag_Echo_Constant extends FTemplate_Tag_Base
+class FTemplate_Tag_Inline_Echo_Constant
 {
-    public function getCode()
+    public function getTags()
     {
-        return '?>'
-            . str_replace('<?', '<<??>?', $this->_token->getInput())
-            . '<?';
+        return array();
+    }
+
+    public function echoRaw($context, $node)
+    {
+        $node->setRaw(
+            str_replace('<?', '<<??>?', $node->getChunk())
+        );
+
+        $context->appendNode($node);
     }
 }

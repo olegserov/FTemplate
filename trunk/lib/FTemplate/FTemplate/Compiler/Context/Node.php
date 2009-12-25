@@ -5,6 +5,15 @@ class FTemplate_Compiler_Context_Node
 
     protected $_parent;
 
+    protected $_class;
+
+    protected $_type;
+
+    protected $_rawCode;
+
+    protected $_chunk;
+    protected $_line;
+
     public function __construct($context)
     {
         $this->_context = $context;
@@ -20,8 +29,40 @@ class FTemplate_Compiler_Context_Node
         return $this->_parent;
     }
 
+    public function getContext()
+    {
+        return $this->_context;
+    }
+
     public function setChunk($chunk, $line)
     {
+        $this->_chunk = $chunk;
+        $this->_line = $line;
+    }
 
+    public function getChunk()
+    {
+        return $this->_chunk;
+    }
+
+
+    public function setClass($class)
+    {
+        $this->_class = $class;
+    }
+
+    public function setType($type)
+    {
+        $this->_type = $type;
+    }
+
+    public function setRaw($raw)
+    {
+        $this->_rawCode = $raw;
+    }
+
+    public function echoRaw()
+    {
+        echo $this->_rawCode;
     }
 }

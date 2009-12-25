@@ -1,35 +1,44 @@
 <?php
-class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
+class FTemplate_Tag_Block_Logic_If extends FTemplate_Tag_Block_Base
 {
-    const TAG_IF = 'tagIf';
-    const TAG_ELSEIF = 'tagElseIf';
-    const TAG_ELSE = 'tagElse';
-    const TAG_ENDIF = 'tagEndIf';
+    const TAG_FOR = 'tagFor';
+    const TAG_ELSEFOR = 'tagElseFor';
+    const TAG_ENDFOR = 'tagEndFor';
 
     public function getTags()
     {
         return array(
-            'if' => self::TAG_IF,
+            'for' => self::TAG_FOR,
 
-            'elseif' => self::TAG_ELSEIF,
+            'forelse' => self::TAG_FORELSE,
 
-            'else' => self::TAG_ELSE,
-
-            'endif' => self::TAG_ENDIF,
-            '/if' => self::TAG_ENDIF
+            'endfor' => self::TAG_ENDFOR,
+            '/for' => self::TAG_ENDFOR,
         );
     }
 
-    public function tagIf($context, $node)
+    public function tagFor($context, $node)
     {
-        $expression = null;
+        $counter = null;
+        $from = null;
+        $to = null;
 
+        // {for $i in 1..($i + 1)}
         $node->createStreamer()
-            ->expectString('if')
-            ->expectExpression($expression)
-            ->expectEnd();
+            ->expectString('for')
+            ->expectVar($counter)
+            ->expectString('in')
+            ->expectExperssion($from)
+            ->expectString('..')
+            ->expectExpression($to)
+            ->expectdEnd();
 
-        $node->setRaw(sprintf('<?if (%s):?>', $expression->compile()));
+        $node->setRaw(
+            sprintf('$%s_from = %s; ', $counter, $from->compile())
+            . sprintf('$%s_to = ; ', $counter, $to->compile())
+            . sprintf('if ($%s_to <= $%s_from): ', $counter, $counter)
+            . sprintf('for($%s = $%s_from; $%s <= $%s_to; $%s++): ', $counter, $counter, $counter, $counter, $counter)
+        );
 
         $context->appendNode($node);
         $context->levelDown();

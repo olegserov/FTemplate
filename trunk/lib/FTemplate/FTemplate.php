@@ -11,7 +11,7 @@ class FTemplate extends FTemplate_Manager
         $skel = new FTemplate_Template_Skel($origFile);
 
         if (
-            class_exists($skel->getClass(), false)
+            class_exists($skel->getClassName(), false)
             || $this->getCache()->load($skel)
         ) {
             return $skel;
@@ -22,6 +22,8 @@ class FTemplate extends FTemplate_Manager
         $this->getCompiler()->compile($skel);
 
         $this->getCache()->save($skel);
+
+        $skel->evalCode();
 
         return $skel;
     }

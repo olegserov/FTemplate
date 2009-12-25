@@ -50,6 +50,8 @@ class FTemplate_Parser extends FTemplate_Manager
 
     protected function _parseChunks(FTemplate_Template_Skel $skel)
     {
+        // @todo remove it!
+        $echo = new FTemplate_Tag_Inline_Echo_Constant();
         $skel->context = new FTemplate_Compiler_Context($skel);
 
         $i = 0;
@@ -63,7 +65,7 @@ class FTemplate_Parser extends FTemplate_Manager
 
             if ($i % 2 == 1) {
                 $this->_createTag(
-                    '',
+                    $echo,
                     'echoRaw',
                     $skel->context,
                     $skel->context->createNode($chunk, $line)
@@ -84,7 +86,7 @@ class FTemplate_Parser extends FTemplate_Manager
 
         foreach ($this->_tags as $group) {
             foreach ($group as $regex => $ob) {
-                if (preg_match($regex, $chunk)) {
+                if (preg_match("{^$regex}xis", $chunk)) {
                     $this->_createTag($ob[0], $ob[1], $context, $node);
                     return;
                 }

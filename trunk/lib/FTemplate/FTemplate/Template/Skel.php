@@ -7,6 +7,8 @@ class FTemplate_Template_Skel
 
     protected $_class;
 
+    protected $_compiledCode;
+
     public function __construct($origFile)
     {
         $file = realpath($origFile);
@@ -38,4 +40,25 @@ class FTemplate_Template_Skel
     public function getFileContent()
     {
         return file_get_contents($this->_file);
-    }}
+    }
+
+    public function setCode($code)
+    {
+        $this->_compiledCode = $code;
+    }
+
+    public function getCode()
+    {
+        return $this->_compiledCode;
+    }
+
+    public function createObject($args)
+    {
+        return new $this->_class($args);
+    }
+
+    public function evalCode()
+    {
+        eval('?>' . $this->getCode());
+    }
+}

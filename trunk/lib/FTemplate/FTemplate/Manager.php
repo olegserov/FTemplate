@@ -61,6 +61,7 @@ class FTemplate_Manager
     protected function _initParser()
     {
         $this->_parser = new FTemplate_Parser($this);
+        $this->_parser->addTag(new FTemplate_Tag_Block_Logic_If());
     }
 
     /**
