@@ -3,7 +3,7 @@ class FTemplate_Expression_ConsantTest extends FTemplate_Test_Expression_BaseTes
 {
     protected function _getObject()
     {
-        return new FTemplate_Expression_Constant();
+        return new FTemplate_Expression_Argument_Constant();
     }
 
     protected function _getPairs()

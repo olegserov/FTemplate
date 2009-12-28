@@ -1,9 +1,11 @@
 <?php
-class FTemplate extends FTemplate_Manager
+class FTemplate extends FTemplate_Factory
 {
     public function display($template, $args, $name = 'main')
     {
-        $this->_loadFile($template)->createObject($args)->show($name);
+        $this->_loadFile($template)
+            ->createObject($this->createEnvironment($args))
+            ->show($name);
     }
 
     protected function _loadFile($origFile)

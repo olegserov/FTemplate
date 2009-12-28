@@ -3,7 +3,7 @@ class FTemplate_Expression_OperatorsTest extends FTemplate_Test_Expression_BaseT
 {
     protected function _getObject()
     {
-        return new FTemplate_Expression_Operators();
+        return new FTemplate_Expression_Operator_Binary_Operators();
     }
 
     protected function _getPairs()

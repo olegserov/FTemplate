@@ -18,4 +18,13 @@ class FTemplate_Parser_Streamer_Extened
             return $this->expect(preg_quote($string), $named);
         }
     }
+
+    public function expectExpression(& $expression)
+    {
+        if ($this->test(preg_quote('('))) {
+            $this->expect()
+        } else {
+
+        }
+    }
 }

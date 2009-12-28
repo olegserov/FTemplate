@@ -1,15 +1,18 @@
 <?php
-class FTemplate_Template_Base
+abstract class FTemplate_Template_Base
 {
-    protected $_vars;
+    protected $_env;
 
-    public function __construct($vars)
+    public function __construct(FTemplate_Template_Environment $env)
     {
-        $this->_vars = $vars;
+        $this->_env = $env;
+        $this->_env->registerTemplates($this, $this->_getTemplates());
     }
 
     public function show($name)
     {
-        echo $name;
+        $this->_env->showTemplate($name, null);
     }
+
+    abstract protected function _getTemplates();
 }

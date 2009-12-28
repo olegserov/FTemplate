@@ -24,18 +24,18 @@ class FTemplate_Expression extends FTemplate_Base
         $this->_lastName = '~' . count($this->_mapReplace) . '~';
 
         $this->_mapReplace[$this->_lastName]
-            = $this->_expressions[$this->_key]->parse($matches);
+            = $this->_expressions[$this->_key]->compile($matches);
 
         $this->_mapTypes[$this->_lastName] = $this->_key;
 
         return $this->_lastName;
     }
 
-    public function parse(FTemplate_Token_Base $token, FTemplate_Parser_Tree_Context $context)
+    public function parse($input)
     {
         $this->_reset();
 
-        $input = $token->getInput();
+        //$input = $token->getInput();
 
         if (empty($input)) {
             throw new Exception('Empty input');
@@ -64,7 +64,7 @@ class FTemplate_Expression extends FTemplate_Base
         } while ($count);
 
         if (trim($input) != $this->_lastName) {
-            throw new FTemplate_Parser_Exception('Undefined expression: ' . $input, $token, $context);
+            throw new Exception('Undefined expression: ' . $input);
         }
 
         $this->_mapReplace = array_reverse($this->_mapReplace);
@@ -78,18 +78,18 @@ class FTemplate_Expression extends FTemplate_Base
 
     public function prepareRegExp($regExp)
     {
-        return '/' . str_replace('T_EXP', '(?:\\~[0-9]+\\~)', $regExp) . '/isx';
+        return '{' . str_replace('T_EXP', '(?:\\~[0-9]+\\~)', $regExp) . '}isx';
     }
 
     public function __construct()
     {
         $expressions = array(
-            'FTemplate_Expression_StringConstant',
-            'FTemplate_Expression_Numeric',
-            'FTemplate_Expression_Var',
-            'FTemplate_Expression_RoundBracket',
-            'FTemplate_Expression_Operators',
-            'FTemplate_Expression_Constant',
+            'FTemplate_Expression_Argument_StringConstant',
+            'FTemplate_Expression_Argument_Numeric',
+            'FTemplate_Expression_Argument_Var',
+            'FTemplate_Expression_Argument_RoundBracket',
+            'FTemplate_Expression_Operator_Binary_Operators',
+            'FTemplate_Expression_Argument_Constant',
         );
 
         foreach ($expressions as $exp) {
@@ -111,5 +111,19 @@ class FTemplate_Expression extends FTemplate_Base
         ksort($this->_expressionsRegExp);
 
         $this->_expressionsRegExp = array_reverse($this->_expressionsRegExp);
+    }
+
+    public function compileGlobalRegExp()
+    {
+        return "
+            (\(
+                (
+                    (?>[^()'\"]*)             # All, except: \", ', (, )
+                    | \"([^\"\\\\]*|\\\\.)*\" # Double quoted string
+                    | '([^'\\\\]*|\\\\.)*'    # Single quoted string
+                    | (?1)*                   # Recursive
+                )*
+            \))
+        ";
     }
 }

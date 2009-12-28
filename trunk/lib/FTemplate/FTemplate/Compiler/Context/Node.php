@@ -12,7 +12,10 @@ class FTemplate_Compiler_Context_Node
     protected $_rawCode;
 
     protected $_chunk;
+
     protected $_line;
+
+    protected $_body;
 
     public function __construct($context)
     {
@@ -40,12 +43,6 @@ class FTemplate_Compiler_Context_Node
         $this->_line = $line;
     }
 
-    public function getChunk()
-    {
-        return $this->_chunk;
-    }
-
-
     public function setClass($class)
     {
         $this->_class = $class;
@@ -54,6 +51,16 @@ class FTemplate_Compiler_Context_Node
     public function setType($type)
     {
         $this->_type = $type;
+    }
+
+    public function setBody($body)
+    {
+        $this->_body = $body;
+    }
+
+    public function getBody()
+    {
+        return $this->_body;
     }
 
     public function setRaw($raw)

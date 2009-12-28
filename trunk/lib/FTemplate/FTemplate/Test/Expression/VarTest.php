@@ -3,7 +3,7 @@ class FTemplate_Expression_VarTest extends FTemplate_Test_Expression_BaseTest
 {
     protected function _getObject()
     {
-        return new FTemplate_Expression_Var();
+        return new FTemplate_Expression_Argument_Var();
     }
 
     protected function _getPairs()

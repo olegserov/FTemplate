@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Tag_Inline_Echo_Constant
+class FTemplate_Tag_Inline_Echo_Constant implements FTemplate_Tag_Interface
 {
     public function getTags()
     {
@@ -9,7 +9,7 @@ class FTemplate_Tag_Inline_Echo_Constant
     public function echoRaw($context, $node)
     {
         $node->setRaw(
-            str_replace('<?', '<<??>?', $node->getChunk())
+            str_replace('<?', '<<??>?', $node->getBody())
         );
 
         $context->appendNode($node);

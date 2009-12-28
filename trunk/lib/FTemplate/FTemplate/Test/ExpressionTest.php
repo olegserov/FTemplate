@@ -21,4 +21,31 @@ class FTemplate_Test_ExpressionTest extends PHPUnit_Framework_TestCase
             );
         }
     }
+
+    public function testGlobalRegExp()
+    {
+        $assertsTrue = array(
+            '(a + b) + d' => '(a + b)',
+            '(a + (b + c)) * gg' => '(a + (b + c))',
+            '(a + (b + c) + "gg") * gg' => '(a + (b + c) + "gg")',
+            '(a + (b + c) + \'gg\') * gg' => '(a + (b + c) + \'gg\')',
+            '(a + ")") * gg' => '(a + ")")',
+            '("ggg") + "ff" )' => '("ggg")',
+            '("g\"g\g") + "ff" )' => '("g\"g\\g")',
+            '(a + "(") + ")" * gg' => '(a + "(")',
+            '(a + "(" + "("  + ) + ")" * gg' => '(a + "(" + "("  + )',
+            '($i ^ (1 + $i)) .. ($i)' => '($i ^ (1 + $i))'
+        );
+
+        $exp = new FTemplate_Expression();
+        $regex = $exp->compileGlobalRegExp();
+
+        $matches = array();
+
+        foreach ($assertsTrue as $assert => $expect) {
+            $res = preg_match('{^(?:' . $regex . ')}six', $assert, $matches);
+            $this->assertTrue($res === 1, $assert);
+            $this->assertEquals($expect, $matches[0], var_Export(array($assert, $matches), 1));
+        }
+    }
 }

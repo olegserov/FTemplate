@@ -1,22 +1,22 @@
 <?php
-class FTemplate_Tag_Echo_Expression extends FTemplate_Tag_Base implements FTemplate_Tag_ICustom
+class FTemplate_Tag_Inline_Echo_Expression implements FTemplate_Tag_Interface
 {
-    protected $_code;
-
-    public static function getRegExp()
+    public function getTags()
     {
-        return '/.*/s';
+        return array(
+            '' => 'echoExpression'
+        );
     }
 
-    public function getCode()
+    public function echoExpression(FTemplate_Compiler_Context $context, $node)
     {
-        return 'echo ' . $this->_code . ';';
-    }
 
-    public function parse(FTemplate_Parser_Tree_Context $context)
-    {
-        $this->_code = $context->getParser()
-            ->getExpressionParser()
-            ->parse($this->_token, $context);
+        $expressionCompiled = $context->getFactory()
+            ->getExpression()
+            ->parse($node->getBody());
+
+        $node->setRaw(sprintf('<?=%s?>', $expressionCompiled));
+
+        $context->appendNode($node);
     }
 }

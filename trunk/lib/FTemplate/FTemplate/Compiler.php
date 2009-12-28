@@ -27,7 +27,7 @@ class FTemplate_Compiler extends FTemplate_Base
     protected function _echoTemplate(FTemplate_Compiler_Context_Template $template)
     {
         echo sprintf(
-            'protected function _%s(array $__args = array()){?>',
+            'public function %s(array $__args = null){?>',
             $template->getQuotedName()
         );
 
@@ -41,6 +41,16 @@ class FTemplate_Compiler extends FTemplate_Base
         echo sprintf(
             '<?class %s extends FTemplate_Template_Base {',
             $skel->getClassName()
+        );
+
+        $templates = array();
+
+        foreach ($skel->context->getTemplates() as $template) {
+            $templates[$template->getName()] = $template->getQuotedName();
+        }
+        echo sprintf(
+            'protected function _getTemplates(){return %s;}',
+            var_export($templates, 1)
         );
     }
 }

@@ -11,7 +11,7 @@ abstract class FTemplate_Test_Expression_BaseTest extends PHPUnit_Framework_Test
 
         $reg_exps = array();
         foreach((array) $expression->getRegExp() as $exp) {
-            $reg_exps[] = "/$exp/x";
+            $reg_exps[] = '{' . $exp . '}x';
         }
 
 
@@ -31,7 +31,7 @@ abstract class FTemplate_Test_Expression_BaseTest extends PHPUnit_Framework_Test
                 $this->assertEquals(0, $res, $from);
             } else {
                 $this->assertEquals(1, $res, var_export(array($from, $reg_exps), 1));
-                $this->assertEquals($to, $expression->parse($matches));
+                $this->assertEquals($to, $expression->compile($matches));
             }
         }
 

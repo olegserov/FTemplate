@@ -3,12 +3,27 @@ abstract class FTemplate_Base
 {
     /**
      * Manager
-     * @var FTemplate_Manager
+     * @var FTemplate_Factory
      */
-    protected $_manager;
+    protected $_factory;
 
-    public function __construct(FTemplate_Manager $manager)
+    public function __construct(FTemplate_Factory $factory)
     {
-        $this->_manager = $manager;
+        $this->_factory = $factory;
+        $this->_init();
+    }
+
+    protected function _init()
+    {
+
+    }
+
+    /**
+     * Gets factory
+     * @return FTemplate_Factory
+     */
+    public function getFactory()
+    {
+        return $this->_factory;
     }
 }

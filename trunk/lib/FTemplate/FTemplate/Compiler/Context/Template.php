@@ -8,6 +8,11 @@ class FTemplate_Compiler_Context_Template
 
     protected $_items = array();
 
+    public function __construct($context, $name)
+    {
+        $this->_name = $name;
+    }
+
     public function addArg($name, $default = null)
     {
         if ($this->_name == 'main') {
@@ -30,7 +35,12 @@ class FTemplate_Compiler_Context_Template
 
     public function getQuotedName()
     {
+        return '_' . str_replace('-', '_', $this->_name);
+    }
 
+    public function getName()
+    {
+        return $this->_name;
     }
 
 }

@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Compiler_Context
+class FTemplate_Compiler_Context extends FTemplate_Base
 {
     protected $_skel;
 
@@ -11,12 +11,11 @@ class FTemplate_Compiler_Context
 
     const TEMPLATE_GLOBAL_NAME = '__global__';
 
-    public function __construct($skel)
+    public function setSkel($skel)
     {
         $this->_skel = $skel;
 
         $this->createTemplate(self::TEMPLATE_GLOBAL_NAME);
-
     }
 
     public function getTemplates()
@@ -52,6 +51,7 @@ class FTemplate_Compiler_Context
 
     public function error($msg)
     {
-        echo $msg;
+        throw new Exception($msg);
     }
+
 }

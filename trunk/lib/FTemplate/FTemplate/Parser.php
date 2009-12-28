@@ -1,5 +1,5 @@
 <?php
-class FTemplate_Parser extends FTemplate_Manager
+class FTemplate_Parser extends FTemplate_Base
 {
     /**
      * Tags
@@ -7,6 +7,37 @@ class FTemplate_Parser extends FTemplate_Manager
      */
     protected $_tags;
 
+    protected $_rawRegExp;
+
+    protected $_parseChunkRegExp;
+
+    protected $_tagEchoConstant;
+
+    /**
+     * Inits the world!
+     * @return void
+     */
+    protected function _init()
+    {
+        $this->_rawRegExp = $this->_makeRegex('{(
+              TAG_OPEN SOMETHING TAG_CLOSE
+           |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE
+           |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE
+        )}six');
+
+        $this->_tagEchoConstant = new FTemplate_Tag_Inline_Echo_Constant();
+
+        $this->_parseChunkRegExp = $this->_makeRegex(
+            '{^ TAG_OPEN (%s SOMETHING) TAG_CLOSE $}six'
+        );
+    }
+
+    /**
+     * Adds tag to parser
+     * @param $tag
+     * @param $order
+     * @return void
+     */
     public function addTag($tag, $order = 10)
     {
         if (!($tag instanceof FTemplate_Tag_Interface)) {
@@ -28,31 +59,42 @@ class FTemplate_Parser extends FTemplate_Manager
         ksort($this->_tags);
     }
 
+    /**
+     * Main parse algoritm
+     * @param $skel
+     * @return void
+     */
     public function parse(FTemplate_Template_Skel $skel)
     {
         $this->_parseRaw($skel);
         $this->_parseChunks($skel);
     }
 
+    /**
+     * Parse raw data into chunks
+     * @param FTemplate_Template_Skel $skel
+     * @return void
+     */
     protected function _parseRaw(FTemplate_Template_Skel $skel)
     {
         $skel->chunks = preg_split(
-            $this->_makeRegex('/(
-                  TAG_OPEN SOMETHING TAG_CLOSE
-               |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE
-               |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE
-            )/sx'),
+            $this->_rawRegExp,
             $skel->getFileContent(),
             0,
             PREG_SPLIT_DELIM_CAPTURE
         );
     }
 
+    /**
+     * Parse chunks into tags and sets context.
+     * @param FTemplate_Template_Skel $skel
+     * @return void
+     */
     protected function _parseChunks(FTemplate_Template_Skel $skel)
     {
         // @todo remove it!
-        $echo = new FTemplate_Tag_Inline_Echo_Constant();
-        $skel->context = new FTemplate_Compiler_Context($skel);
+        $skel->context = $this->_factory->createContext();
+        $skel->context->setSkel($skel);
 
         $i = 0;
 
@@ -65,7 +107,7 @@ class FTemplate_Parser extends FTemplate_Manager
 
             if ($i % 2 == 1) {
                 $this->_createTag(
-                    $echo,
+                    $this->_tagEchoConstant,
                     'echoRaw',
                     $skel->context,
                     $skel->context->createNode($chunk, $line)
@@ -84,18 +126,33 @@ class FTemplate_Parser extends FTemplate_Manager
     {
         $node = $context->createNode($chunk, $line);
 
+        $matches = array();
+
         foreach ($this->_tags as $group) {
             foreach ($group as $regex => $ob) {
-                if (preg_match("{^$regex}xis", $chunk)) {
+                if (preg_match(
+                    sprintf($this->_parseChunkRegExp, $regex),
+                    $chunk,
+                    $matches
+                )) {
+                    $node->setBody($matches[1]);
                     $this->_createTag($ob[0], $ob[1], $context, $node);
                     return;
                 }
             }
         }
 
-        $context->error('Error! unknown tag!');
+        $context->error('Fatal error!');
     }
 
+    /**
+     * Create tag
+     * @param $tagClass
+     * @param $tagMethod
+     * @param $context
+     * @param $node
+     * @return void
+     */
     protected function _createTag($tagClass, $tagMethod, $context, $node)
     {
         $node->setClass($tagClass);
