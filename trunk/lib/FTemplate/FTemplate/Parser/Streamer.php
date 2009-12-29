@@ -87,9 +87,14 @@ class FTemplate_Parser_Streamer
      */
     public function errorNotExpected($what)
     {
-        throw new FTemplate_Parser_Streamer_Exception(
+        $this->_error(
             "Expected: $what got: $this->_left"
         );
+    }
+
+    protected function _error($msg)
+    {
+        throw new FTemplate_Parser_Streamer_Exception($msg);
     }
 
     /**
@@ -100,7 +105,7 @@ class FTemplate_Parser_Streamer
     public function movePointer($named = null)
     {
         if ($this->_nextMatched === null) {
-            throw new FTemplate_Compiler_Parser_Streamer_Exception(
+            $this->_error(
                 'Nothing parsed for next!'
             );
         }

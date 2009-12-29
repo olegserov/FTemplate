@@ -35,10 +35,11 @@ class FTemplate_Expression extends FTemplate_Base
     {
         $this->_reset();
 
-        //$input = $token->getInput();
-
         if (empty($input)) {
             $context->error("Expression is empty!");
+        }
+        if (!is_string($input)) {
+            $context->error("String expected, " . gettype($input) . " given :(");
         }
 
         $originalInput = $input;

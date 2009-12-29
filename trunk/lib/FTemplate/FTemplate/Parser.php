@@ -31,9 +31,9 @@ class FTemplate_Parser extends FTemplate_Base
                     | (?2)*                   # Recursive
                 )*
                 TAG_CLOSE
-            )\n?
-            |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE\n?
-            |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE\n?
+            )
+            |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE
+            |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE
         )
         }six"
         );
@@ -168,7 +168,7 @@ class FTemplate_Parser extends FTemplate_Base
             }
         }
 
-        $context->error('Fatal error!');
+        $context->error('Tag could not to be parsed');
     }
 
     /**

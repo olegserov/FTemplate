@@ -29,7 +29,7 @@ class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
             ->expectExpression($expression)
             ->expectEnd();
 
-        $node->setRaw(sprintf('<?if (%s):?>', $expression->compile()));
+        $node->setRaw(sprintf('<?if (%s):?>', $expression));
 
         $context->appendNode($node);
         $context->levelDown();
@@ -44,7 +44,7 @@ class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
             ->expectExpression($expression)
             ->expectEnd();
 
-        $node->setRaw(sprintf('<?elseif (%s):?>', $expression->compile()));
+        $node->setRaw(sprintf('<?elseif (%s):?>', $expression));
 
         $context->levelUp(
             $node,

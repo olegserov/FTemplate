@@ -1,12 +1,29 @@
 <?php
 class FTemplate_Test_ExpressionTest extends PHPUnit_Framework_TestCase
 {
+    protected function _createExpression()
+    {
+        return new FTemplate_Expression(new FTemplate());
+    }
+
+    protected function _createContext()
+    {
+        $mock = $this->getMock(
+            'FTemplate_Compiler_Context',
+            array('error'),
+            array(),
+            '',
+            false
+        );
+        return $mock;
+    }
+
     public function testGeneral()
     {
-        $exp = new FTemplate_Expression();
+        $exp = $this->_createExpression();
         $pairs = array(
             '4' => '4',
-            '$a.b' => '$this->_vars[\'a\'][\'b\']',
+            '$a.b' => '$this->_env->vars[\'a\'][\'b\']',
             '1 + 3 * 4' => '(1 + (3 * 4))',
             '1 .. 3 * 4 % 1' => '(1 . (3 * 4 % 1))',
             '(1 .. 3) * 4 % 1' => '((((1 . 3))) * (4 % 1))',
@@ -16,7 +33,7 @@ class FTemplate_Test_ExpressionTest extends PHPUnit_Framework_TestCase
         foreach ($pairs as $from => $to) {
             $this->assertEquals(
                 $to,
-                $exp->parse($from, null),
+                $exp->parse($this->_createContext(), $from),
                 $from
             );
         }
@@ -37,8 +54,7 @@ class FTemplate_Test_ExpressionTest extends PHPUnit_Framework_TestCase
             '($i ^ (1 + $i)) .. ($i)' => '($i ^ (1 + $i))'
         );
 
-        $exp = new FTemplate_Expression();
-        $regex = $exp->compileGlobalRegExp();
+        $regex = $this->_createExpression()->compileGlobalRegExp();
 
         $matches = array();
 

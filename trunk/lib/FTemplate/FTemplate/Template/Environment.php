@@ -5,6 +5,11 @@ class FTemplate_Template_Environment
 
     protected $_templates = array();
 
+    public function __construct($vars)
+    {
+        $this->vars = $vars;
+    }
+
     public function registerTemplates(FTemplate_Template_Base $base, array $templates)
     {
         foreach ($templates as $name => $quotedName) {

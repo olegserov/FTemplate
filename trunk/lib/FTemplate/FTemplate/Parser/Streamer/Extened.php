@@ -1,6 +1,18 @@
 <?php
-class FTemplate_Parser_Streamer_Extened
+class FTemplate_Parser_Streamer_Extened extends FTemplate_Parser_Streamer
 {
+
+    /**
+     * Context
+     * @var FTemplate_Compiler_Context
+     */
+    protected $_context;
+
+    public function setContext($context)
+    {
+        $this->_context = $context;
+    }
+
     /**
      * Expect a fixed string
      * @param $string
@@ -11,7 +23,7 @@ class FTemplate_Parser_Streamer_Extened
     {
         if (is_array($string)) {
             return $this->expect(
-                join('|', array_map($string, 'preg_qutoe')),
+                join('|', array_map('preg_quote', $string)),
                 $named
             );
         } else {
@@ -19,12 +31,38 @@ class FTemplate_Parser_Streamer_Extened
         }
     }
 
-    public function expectExpression(& $expression)
+    public function expectEnd()
     {
+        return $this->expect('$');
+    }
+
+    public function testEnd()
+    {
+        return $this->test('$');
+    }
+
+    protected function _error($msg)
+    {
+        $this->_context->error($msg);
+    }
+
+
+    public function expectExpression(& $expressionCompiled)
+    {
+        $expression = $this->_context->getFactory()->getExpression();
+
         if ($this->test(preg_quote('('))) {
-            $this->expect()
+            $this->expect(
+                $expression->compileGlobalRegExp()
+            );
+            $expressionCompiled = $expression->parse(
+                $this->_context,
+                current($this->getCurrent())
+            );
         } else {
 
         }
+
+        return $this;
     }
 }

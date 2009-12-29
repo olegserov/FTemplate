@@ -39,7 +39,7 @@ class FTemplate_Expression_Argument_Var implements FTemplate_Expression_Interfac
     public function compile(array $matches)
     {
         // $xxx
-        $return = '$this->_vars';
+        $return = '$this->_env->vars';
 
         $matches = preg_split(
             '/

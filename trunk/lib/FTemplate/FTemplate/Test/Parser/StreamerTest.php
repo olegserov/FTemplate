@@ -60,6 +60,26 @@ class FTemplate_Test_Parser_StreamerTest extends PHPUnit_Framework_TestCase
 	    $this->assertEquals((array) '2010', $streamer->getNamed('year'));
 	}
 
+	public function testEnd()
+	{
+	    $streamer = $this->_createStreamer('Now is 2010!')->expect('now')->expect('is');
+
+	    $streamer->expect('\d+', 'year')->expect('\!')->expect('$');
+
+	    $this->assertEquals((array) '2010', $streamer->getNamed('year'));
+	}
+
+    /**
+     *
+     * @expectedException FTemplate_Parser_Streamer_Exception
+     */
+	public function testEndUnexpected()
+	{
+        $this->_createStreamer('Now is 2010!')->expect('$');
+	}
+
+
+
 	/**
 	 *
 	 * @expectedException FTemplate_Parser_Streamer_Exception
