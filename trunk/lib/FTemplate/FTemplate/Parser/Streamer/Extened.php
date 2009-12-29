@@ -65,4 +65,18 @@ class FTemplate_Parser_Streamer_Extened extends FTemplate_Parser_Streamer
 
         return $this;
     }
+
+    public function expectExpressionTillEnd(& $expressionCompiled)
+    {
+        $expression = $this->_context->getFactory()->getExpression();
+
+        $this->expect('(.*)$');
+
+        $expressionCompiled = $expression->parse(
+            $this->_context,
+            next($this->getCurrent())
+        );
+
+        return $this;
+    }
 }

@@ -26,8 +26,7 @@ class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
 
         $node->createStreamer()
             ->expectString('if')
-            ->expectExpression($expression)
-            ->expectEnd();
+            ->expectExpressionTillEnd($expression);
 
         $node->setRaw(sprintf('<?if (%s):?>', $expression));
 
@@ -41,8 +40,7 @@ class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
 
         $node->createStreamer()
             ->expectString('elseif')
-            ->expectExpression($expression)
-            ->expectEnd();
+            ->expectExpressionTillEnd($expression);
 
         $node->setRaw(sprintf('<?elseif (%s):?>', $expression));
 
@@ -53,6 +51,8 @@ class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
                 self::TAG_ELSEIF
             )
         );
+
+        $context->appendNode($node);
 
         $context->levelDown();
     }
@@ -92,5 +92,6 @@ class FTemplate_Tag_Block_Logic_If implements FTemplate_Tag_Interface
                 self::TAG_ELSE
             )
         );
+        $context->appendNode($node);
     }
 }

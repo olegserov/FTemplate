@@ -57,13 +57,19 @@ class FTemplate_Compiler_Context extends FTemplate_Base
     {
         $args = func_get_args();
         $msg = array_shift($args);
+
+        $parent = $this->_currentNode;
+
+        while ($parent->getParent() !== null) {
+            $parent = $parent->getParent();
+        }
+
         throw new Exception(sprintf(
-            "Error Msg: %s;\nFile: %s:%d\nLast tag: %s; Prev node: %s",
+            "Error Msg: %s;\nFile: %s:%d;\nNodeTree:\n%s",
             vsprintf($msg, $args),
             $this->_skel->getFile(),
             $this->_lastNode->getLine(),
-            $this->_lastNode->getChunk(),
-            (isset($this->_prevNode) ? $this->_prevNode->getChunk() : '<none>')
+            (string) $parent
         ));
     }
 
@@ -111,8 +117,6 @@ class FTemplate_Compiler_Context extends FTemplate_Base
         }
 
         $this->_currentNode = $parent;
-
-        $this->appendNode($node);
     }
 
 }

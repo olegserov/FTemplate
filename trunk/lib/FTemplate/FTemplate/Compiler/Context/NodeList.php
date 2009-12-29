@@ -19,9 +19,12 @@ class FTemplate_Compiler_Context_NodeList extends FTemplate_Compiler_Context_Nod
     {
         $text = "NodeList\n";
 
+        if (count($this->_nodes) == 0) {
+            return $text . "<no nodes>";
+        }
         foreach ($this->_nodes as $i => $node) {
-            $text .= "#$i  "
-                . str_replace("\n", "\n#$i  ", $node->__toString())
+            $text .= "^$i  "
+                . str_replace("\n", "\n|$i  ", $node->__toString())
                 . "\n";
         }
 
