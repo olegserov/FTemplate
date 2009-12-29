@@ -135,6 +135,6 @@ class PHPUnit_Extensions_PhptTestCaseStub
 
     public function getName()
     {
-        return 'getName';
+        return $this->_file;
     }
 }

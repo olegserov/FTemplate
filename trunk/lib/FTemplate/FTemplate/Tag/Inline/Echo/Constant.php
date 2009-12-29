@@ -9,7 +9,7 @@ class FTemplate_Tag_Inline_Echo_Constant implements FTemplate_Tag_Interface
     public function echoRaw($context, $node)
     {
         $node->setRaw(
-            str_replace('<?', '<<??>?', $node->getBody())
+            str_replace('<?', '<<??>?', $node->getChunk())
         );
 
         $context->appendNode($node);

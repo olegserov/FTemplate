@@ -48,9 +48,13 @@ class FTemplate_Compiler extends FTemplate_Base
         foreach ($skel->context->getTemplates() as $template) {
             $templates[$template->getName()] = $template->getQuotedName();
         }
+
+        $templates = var_export($templates, 1);
+        $templates = str_replace("\n", " ", $templates);
+
         echo sprintf(
             'protected function _getTemplates(){return %s;}',
-            var_export($templates, 1)
+            $templates
         );
     }
 }

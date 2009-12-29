@@ -13,7 +13,7 @@ class FTemplate_Tag_Inline_Echo_Expression implements FTemplate_Tag_Interface
 
         $expressionCompiled = $context->getFactory()
             ->getExpression()
-            ->parse($node->getBody());
+            ->parse($context, $node->getBody());
 
         $node->setRaw(sprintf('<?=%s?>', $expressionCompiled));
 

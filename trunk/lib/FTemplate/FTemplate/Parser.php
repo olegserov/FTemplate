@@ -19,11 +19,24 @@ class FTemplate_Parser extends FTemplate_Base
      */
     protected function _init()
     {
-        $this->_rawRegExp = $this->_makeRegex('{(
-              TAG_OPEN SOMETHING TAG_CLOSE
-           |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE
-           |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE
-        )}six');
+        $this->_rawRegExp = $this->_makeRegex(
+        "{
+        (
+            (
+                TAG_OPEN
+                (
+                    (?>[^{}'\"]*)             # All, except: \", ', TAG_OPEN, TAG_CLOSE
+                    | \"([^\"\\\\]*|\\\\.)*\" # Double quoted string
+                    | '([^'\\\\]*|\\\\.)*'    # Single quoted string
+                    | (?2)*                   # Recursive
+                )*
+                TAG_CLOSE
+            )\n?
+            |  TAG_COMMENT_OPEN SOMETHING TAG_COMMENT_CLOSE\n?
+            |  TAG_LITERAL_OPEN SOMETHING TAG_LITERAL_CLOSE\n?
+        )
+        }six"
+        );
 
         $this->_tagEchoConstant = new FTemplate_Tag_Inline_Echo_Constant();
 
@@ -82,6 +95,8 @@ class FTemplate_Parser extends FTemplate_Base
             $skel->getFileContent(),
             0,
             PREG_SPLIT_DELIM_CAPTURE
+                | PREG_SPLIT_OFFSET_CAPTURE
+
         );
     }
 
@@ -100,23 +115,34 @@ class FTemplate_Parser extends FTemplate_Base
 
         $line = 1;
 
+        $current = 0;
+
         foreach ($skel->chunks as $chunk) {
+            /**
+             * See http://bugs.php.net/bug.php?id=50605
+             */
+            if ($chunk[1] != $current) {
+                continue;
+            }
+
+            $current = $chunk[1] + strlen($chunk[0]);
+
             $i++;
 
-            if ($chunk === '') continue;
+            if ($chunk[0] === '') continue;
 
             if ($i % 2 == 1) {
                 $this->_createTag(
                     $this->_tagEchoConstant,
                     'echoRaw',
                     $skel->context,
-                    $skel->context->createNode($chunk, $line)
+                    $skel->context->createNode($chunk[0], $line)
                 );
             } else {
-                $this->_parseChunk($chunk, $line, $skel->context);
+                $this->_parseChunk($chunk[0], $line, $skel->context);
             }
 
-            $line += substr_count("\n", $chunk);
+            $line += substr_count("\n", $chunk[0]);
         }
 
         $skel->chunks = null;
@@ -165,7 +191,7 @@ class FTemplate_Parser extends FTemplate_Base
     {
         $dic = array(
             'TAG_OPEN' => '\\{',
-            'TAG_CLOSE' => '\\}\n?',
+            'TAG_CLOSE' => '\\}',
             'TAG_COMMENT_OPEN' => '\\{\\*',
             'TAG_COMMENT_CLOSE' => '\\*\\}',
             'TAG_LITERAL_OPEN' => '\\{%',

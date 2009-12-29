@@ -31,15 +31,17 @@ class FTemplate_Expression extends FTemplate_Base
         return $this->_lastName;
     }
 
-    public function parse($input)
+    public function parse(FTemplate_Compiler_Context $context, $input)
     {
         $this->_reset();
 
         //$input = $token->getInput();
 
         if (empty($input)) {
-            throw new Exception('Empty input');
+            $context->error("Expression is empty!");
         }
+
+        $originalInput = $input;
 
         $count = 0;
 
@@ -64,7 +66,7 @@ class FTemplate_Expression extends FTemplate_Base
         } while ($count);
 
         if (trim($input) != $this->_lastName) {
-            throw new Exception('Undefined expression: ' . $input);
+            $context->error("Could not parse expression <$originalInput>, stopped on: <$input>");
         }
 
         $this->_mapReplace = array_reverse($this->_mapReplace);
@@ -116,14 +118,14 @@ class FTemplate_Expression extends FTemplate_Base
     public function compileGlobalRegExp()
     {
         return "
-            (\(
+            (\\(
                 (
                     (?>[^()'\"]*)             # All, except: \", ', (, )
                     | \"([^\"\\\\]*|\\\\.)*\" # Double quoted string
                     | '([^'\\\\]*|\\\\.)*'    # Single quoted string
                     | (?1)*                   # Recursive
                 )*
-            \))
+            \\))
         ";
     }
 }

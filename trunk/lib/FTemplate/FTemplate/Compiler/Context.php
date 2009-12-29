@@ -9,6 +9,9 @@ class FTemplate_Compiler_Context extends FTemplate_Base
 
     protected $_currentTemplate;
 
+    protected $_lastNode;
+    protected $_prevNode;
+
     const TEMPLATE_GLOBAL_NAME = '__global__';
 
     public function setSkel($skel)
@@ -39,9 +42,10 @@ class FTemplate_Compiler_Context extends FTemplate_Base
         return $this->_templates[$name];
     }
 
-    public function createNode()
+    public function createNode($chunk, $line)
     {
-        return new FTemplate_Compiler_Context_Node($this);
+        $this->_prevNode = $this->_lastNode;
+        return $this->_lastNode = new FTemplate_Compiler_Context_Node($this, $chunk, $line);
     }
 
     public function appendNode($node)
@@ -51,7 +55,14 @@ class FTemplate_Compiler_Context extends FTemplate_Base
 
     public function error($msg)
     {
-        throw new Exception($msg);
+        throw new Exception(sprintf(
+            "Error Msg: %s;\nFile: %s:%d\nLast tag: %s; Prev node: %s",
+            $msg,
+            $this->_skel->getFile(),
+            $this->_lastNode->getLine(),
+            $this->_lastNode->getChunk(),
+            (isset($this->_prevNode) ? $this->_prevNode->getChunk() : '<none>')
+        ));
     }
 
 }
