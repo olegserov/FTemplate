@@ -22,12 +22,16 @@ class FTemplate_Compiler_Context_Node
 
     public function __toString()
     {
+        $str = trim(preg_replace('/\s+/', ' ', $this->_chunk));
+        if (strlen($str) > 40) {
+            $str = substr($str, 0, 25) . '...' . substr($str, -10);
+        }
         return sprintf(
-            'Node: %s::%s; Line: %d; Chunk: %s',
-            get_class($this->_class),
-            $this->_type,
+            "%3s %s %s# %s",
             $this->_line,
-            $this->_chunk
+            $str,
+            str_repeat(' ', max(0, 65 - strlen($str))),
+            $this->_type
         );
     }
 

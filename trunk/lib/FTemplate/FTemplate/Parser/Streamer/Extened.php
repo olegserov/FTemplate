@@ -55,13 +55,16 @@ class FTemplate_Parser_Streamer_Extened extends FTemplate_Parser_Streamer
             $this->expect(
                 $expression->compileGlobalRegExp()
             );
-            $expressionCompiled = $expression->parse(
-                $this->_context,
-                current($this->getCurrent())
-            );
         } else {
-
+            $this->expect(
+                $expression->compileArgumentsRegExp()
+            );
         }
+
+        $expressionCompiled = $expression->parse(
+            $this->_context,
+            current($this->getCurrent())
+        );
 
         return $this;
     }

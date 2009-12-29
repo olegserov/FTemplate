@@ -90,6 +90,7 @@ class FTemplate_Factory
     {
         $this->_parser = new FTemplate_Parser($this);
         $this->_parser->addTag(new FTemplate_Tag_Control_Comment(), 1);
+        $this->_parser->addTag(new FTemplate_Tag_Block_Cycle_ForEach());
         $this->_parser->addTag(new FTemplate_Tag_Block_Logic_If());
         $this->_parser->addTag(new FTemplate_Tag_Inline_Echo_Expression(), 100);
     }

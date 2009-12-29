@@ -142,7 +142,7 @@ class FTemplate_Parser extends FTemplate_Base
                 $this->_parseChunk($chunk[0], $line, $skel->context);
             }
 
-            $line += substr_count("\n", $chunk[0]);
+            $line += substr_count($chunk[0], "\n");
         }
 
         $skel->chunks = null;

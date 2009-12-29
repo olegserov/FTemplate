@@ -59,17 +59,21 @@ class FTemplate_Compiler_Context extends FTemplate_Base
         $msg = array_shift($args);
 
         $parent = $this->_currentNode;
-
-        while ($parent->getParent() !== null) {
+        $i = 3;
+        while ($parent->getParent() !== null && $i-- > 0) {
             $parent = $parent->getParent();
         }
 
         throw new Exception(sprintf(
-            "Error Msg: %s;\nFile: %s:%d;\nNodeTree:\n%s",
+            "Error Msg: %s;\n"
+                . "File: %s:%d;\n"
+                . "NodeTree:\n%s\n"
+                . "%3s >>>>>>HERE!",
             vsprintf($msg, $args),
             $this->_skel->getFile(),
             $this->_lastNode->getLine(),
-            (string) $parent
+            (string) $parent,
+            $this->_lastNode->getLine()
         ));
     }
 
@@ -117,6 +121,8 @@ class FTemplate_Compiler_Context extends FTemplate_Base
         }
 
         $this->_currentNode = $parent;
+
+        return $openTag;
     }
 
 }
